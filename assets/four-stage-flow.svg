@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="760" viewBox="0 0 1800 760" role="img" aria-labelledby="title desc">
+  <title id="title">四阶段 AI 开发工作流说明图</title>
+  <desc id="desc">任务依次经过阶段0归因、阶段1外部真相、阶段2取值地图、阶段3验证闭环，再宣称完成；收尾后通过回灌把踩坑写回档案。</desc>
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#e4ded1" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="170%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#1d2433" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 17 9 L 1 17 z" fill="#5b6475"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="18" markerHeight="18" refX="15" refY="9" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 17 9 L 1 17 z" fill="#16845f"/>
+    </marker>
+    <style>
+      .bg { fill: #f6f4ef; }
+      .grid { fill: url(#grid); opacity: .72; }
+      .title { font: 800 46px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1d2433; }
+      .subtitle { font: 400 20px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #596172; }
+      .label { font: 700 20px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #ffffff; }
+      .small-label { font: 700 18px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #ffffff; }
+      .box-title { font: 800 30px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1d2433; }
+      .box-kicker { font: 700 16px "SFMono-Regular", Consolas, Menlo, monospace; letter-spacing: 1.6px; fill: #596172; }
+      .body { font: 500 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #3f4655; }
+      .body-strong { font: 800 23px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1d2433; }
+      .quote { font: 800 25px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #c9473f; }
+      .card { fill: #ffffff; stroke: #ded8cc; stroke-width: 2; rx: 14; filter: url(#shadow); }
+      .task { fill: #2266a8; }
+      .finish { fill: #1d2433; }
+      .stage0 { fill: #b87918; }
+      .stage1 { fill: #2266a8; }
+      .stage2 { fill: #0d8274; }
+      .stage3 { fill: #16845f; }
+      .arrow { stroke: #5b6475; stroke-width: 4; fill: none; marker-end: url(#arrow); stroke-linecap: round; stroke-linejoin: round; }
+      .loop { stroke: #16845f; stroke-width: 5; fill: none; marker-end: url(#arrow-green); stroke-linecap: round; stroke-linejoin: round; }
+      .loop-soft { stroke: #16845f; stroke-width: 3; fill: none; stroke-dasharray: 9 9; stroke-linecap: round; opacity: .65; }
+      .loop-card { fill: #f0faf5; stroke: #9fd7bf; stroke-width: 2; rx: 16; filter: url(#shadow); }
+      .loop-title { font: 800 28px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #116b4d; }
+      .loop-body { font: 600 23px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #245b48; }
+      .note { font: 500 18px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #7a7469; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1800" height="760"/>
+  <rect class="grid" width="1800" height="760"/>
+
+  <text class="title" x="72" y="78">四阶段 AI 开发工作流</text>
+  <text class="subtitle" x="72" y="116">先归因、先核对外部真相、走唯一取值路径、拿实证后才宣称完成。</text>
+
+  <g transform="translate(70 220)">
+    <rect class="card" x="0" y="0" width="160" height="170"/>
+    <rect class="task" x="0" y="0" width="160" height="52" rx="14"/>
+    <text class="label" x="80" y="35" text-anchor="middle">任务</text>
+    <text class="body" x="80" y="92" text-anchor="middle">需求</text>
+    <text class="body" x="80" y="126" text-anchor="middle">Bug</text>
+    <text class="body" x="80" y="160" text-anchor="middle">变更</text>
+  </g>
+
+  <g transform="translate(280 220)">
+    <rect class="card" x="0" y="0" width="240" height="170"/>
+    <rect class="stage0" x="0" y="0" width="240" height="52" rx="14"/>
+    <text class="small-label" x="120" y="34" text-anchor="middle">阶段 0</text>
+    <text class="box-title" x="120" y="88" text-anchor="middle">归因</text>
+    <text class="body-strong" x="120" y="123" text-anchor="middle">是哪层？</text>
+    <text class="body" x="120" y="156" text-anchor="middle">非代码不写码</text>
+  </g>
+
+  <g transform="translate(570 220)">
+    <rect class="card" x="0" y="0" width="240" height="170"/>
+    <rect class="stage1" x="0" y="0" width="240" height="52" rx="14"/>
+    <text class="small-label" x="120" y="34" text-anchor="middle">阶段 1</text>
+    <text class="box-title" x="120" y="88" text-anchor="middle">外部真相</text>
+    <text class="body-strong" x="120" y="123" text-anchor="middle">代码外真相先核</text>
+    <text class="body" x="120" y="156" text-anchor="middle">配置 / 数据 / 运维</text>
+  </g>
+
+  <g transform="translate(860 220)">
+    <rect class="card" x="0" y="0" width="240" height="170"/>
+    <rect class="stage2" x="0" y="0" width="240" height="52" rx="14"/>
+    <text class="small-label" x="120" y="34" text-anchor="middle">阶段 2</text>
+    <text class="box-title" x="120" y="88" text-anchor="middle">取值地图</text>
+    <text class="body-strong" x="120" y="123" text-anchor="middle">钉到唯一正路</text>
+    <text class="body" x="120" y="156" text-anchor="middle">走真 API 也会取错</text>
+  </g>
+
+  <g transform="translate(1150 220)">
+    <rect class="card" x="0" y="0" width="240" height="170"/>
+    <rect class="stage3" x="0" y="0" width="240" height="52" rx="14"/>
+    <text class="small-label" x="120" y="34" text-anchor="middle">阶段 3</text>
+    <text class="box-title" x="120" y="88" text-anchor="middle">验证闭环</text>
+    <text class="body-strong" x="120" y="123" text-anchor="middle">无实证不许说</text>
+    <text class="quote" x="120" y="157" text-anchor="middle">“修好了”</text>
+  </g>
+
+  <g transform="translate(1450 220)">
+    <rect class="card" x="0" y="0" width="240" height="170"/>
+    <rect class="finish" x="0" y="0" width="240" height="52" rx="14"/>
+    <text class="label" x="120" y="35" text-anchor="middle">宣称完成</text>
+    <text class="body-strong" x="120" y="106" text-anchor="middle">证据齐全后</text>
+    <text class="body" x="120" y="144" text-anchor="middle">才收口</text>
+  </g>
+
+  <path class="arrow" d="M 238 305 L 266 305"/>
+  <path class="arrow" d="M 528 305 L 556 305"/>
+  <path class="arrow" d="M 818 305 L 846 305"/>
+  <path class="arrow" d="M 1108 305 L 1136 305"/>
+  <path class="arrow" d="M 1398 305 L 1436 305"/>
+
+  <g transform="translate(300 515)">
+    <rect class="loop-card" x="0" y="0" width="1190" height="125"/>
+    <text class="loop-title" x="42" y="47">回灌</text>
+    <text class="loop-body" x="42" y="88">踩坑即写回档案，AI 抄写，人审合并</text>
+    <text class="note" x="760" y="47">真相档案是活体：每次任务收尾都要沉淀新外部真相。</text>
+    <text class="note" x="760" y="84">下一次任务从更新后的项目档案开始。</text>
+  </g>
+
+  <path class="loop-soft" d="M 1570 394 C 1570 455 1570 476 1490 515"/>
+  <path class="loop" d="M 1430 660 L 202 660 C 124 660 112 584 112 410"/>
+  <text class="note" x="1342" y="486">收尾后回灌</text>
+
+  <text class="note" x="72" y="716">阶段纪律：按 0 → 1 → 2 → 3 顺序执行，不跳步；非代码层不写代码，未验证不宣称完成。</text>
+</svg>
