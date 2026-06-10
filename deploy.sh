@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 四闸门 AI 开发工作流 · 一键部署
+# 四阶段 AI 开发工作流 · 一键部署
 # 用法:
 #   bash deploy.sh                                  仅全局安装（软链 Skills）
 #   bash deploy.sh /path/to/project                 全局 + 项目级部署
@@ -94,7 +94,7 @@ validate_project() {
   # 防止部署到自身
   local proj_real
   proj_real="$(cd "$proj" && pwd)"
-  [ "$proj_real" = "$HERE" ] && die "不能部署到四闸门仓库自身"
+  [ "$proj_real" = "$HERE" ] && die "不能部署到四阶段仓库自身"
   true
 }
 
@@ -205,15 +205,15 @@ create_workflow_dir() {
   fi
 
   # 复制通用文档（蓝图、推广手册）
-  cp "$HERE/四闸门蓝图.md" "$awd/四闸门蓝图.md"
-  log "复制: 四闸门蓝图.md"
+  cp "$HERE/四阶段蓝图.md" "$awd/四阶段蓝图.md"
+  log "复制: 四阶段蓝图.md"
   cp "$HERE/推广手册.md" "$awd/推广手册.md"
   log "复制: 推广手册.md"
 
   # 复制可视化 HTML
-  if [ -f "$HERE/四闸门工作流.html" ]; then
-    cp "$HERE/四闸门工作流.html" "$awd/四闸门工作流.html"
-    log "复制: 四闸门工作流.html"
+  if [ -f "$HERE/四阶段工作流.html" ]; then
+    cp "$HERE/四阶段工作流.html" "$awd/四阶段工作流.html"
+    log "复制: 四阶段工作流.html"
   fi
 }
 
@@ -385,7 +385,7 @@ generate_value_map_guide() {
 
 ## 什么是取值地图？
 
-取值地图是四闸门工作流 **闸门 2** 的核心工具。它解决的问题是：
+取值地图是四阶段工作流 **阶段 2** 的核心工具。它解决的问题是：
 
 > 代码调用了正确的 API，但**走错了取值路径**，导致数据错误。这类 bug 裸眼看不出来，grep 硬编码数字也抓不到（因为用的都是合法 API），只有跑起来才会出问题。
 
@@ -434,33 +434,33 @@ inject_claude_md() {
 
   printf '\n  ▶ 注入 CLAUDE.md 片段\n'
 
-  local begin_marker="<!-- FOUR-GATE-AI-WORKFLOW-BEGIN -->"
-  local end_marker="<!-- FOUR-GATE-AI-WORKFLOW-END -->"
+  local begin_marker="<!-- FOUR-STAGE-AI-WORKFLOW-BEGIN -->"
+  local end_marker="<!-- FOUR-STAGE-AI-WORKFLOW-END -->"
 
-  # 片段内容（来自 CLAUDE.md片段-回灌与闸门.md，lines 7-39）
+  # 片段内容（来自 CLAUDE.md片段-回灌与阶段纪律.md，lines 7-39）
   local snippet
   snippet=$(cat <<'SNIPPET'
-<!-- 四闸门工作流 · 自动注入 · 不要手动修改此区域 -->
+<!-- 四阶段工作流 · 自动注入 · 不要手动修改此区域 -->
 <!-- 要卸载: bash deploy.sh --uninstall /path/to/project -->
 
-## AI 开发纪律 · 四闸门（本项目强制）
+## AI 开发纪律 · 四阶段（本项目强制）
 
-> 这是「配置即行为 + 远端CI + 手工运维」项目的纪律。详规见 `ai-workflow/四闸门蓝图.md`。**按 0→1→2→3 顺序过闸，不跳步。**
+> 这是「配置即行为 + 远端CI + 手工运维」项目的纪律。详规见 `ai-workflow/四阶段蓝图.md`。**按 0→1→2→3 顺序执行，不跳步。**
 
-### 闸门 0 · 归因（动码前先定层）
+### 阶段 0 · 归因（动码前先定层）
 动任何代码前，先把问题钉到 **代码 / 配置 / 运维 / 数据** 某一层并给证据。
 **不是"代码"层就不许写代码**——先去对应层求证。
 （流程引擎/nacos/UIM 里一半"bug"是配置/运维，写代码修=白费+引新 bug。触发 `attribute-rootcause` skill。）
 
-### 闸门 1 · 外部真相（先核对，再动手）
+### 阶段 1 · 外部真相（先核对，再动手）
 动手前读 `ai-workflow/环境真相档案.md`（或本 CLAUDE.md 的"环境真相"段）。
 **结构性真相入档案、运行时状态现场探针**——别把"列建了没/jar 新不新"写死进文档（必过期），也别靠现探去问稳定结构。
 
-### 闸门 2 · 取值地图（不写死 ID 的真正含义）
+### 阶段 2 · 取值地图（不写死 ID 的真正含义）
 取任何外部值前查「取值地图」（档案 §四）把概念钉到**唯一正路**。
 **警告**：不写死 ID ≠ 只是别写裸数字。走真 API 也会取错值。表里没有的概念，**停下问人，绝不自创查法**。
 
-### 闸门 3 · 验证闭环（无实证不许说"修好了"）
+### 阶段 3 · 验证闭环（无实证不许说"修好了"）
 **铁律**：「修好了 / 部署成功 / 应该没问题 / 已完成」这类话，没有线上实证一律不许说出口。Evidence before assertions。
 按改动类型取实证（触发 `verify-closure` skill）：
 - 后端：确认代码已 push + 构建新 jar
@@ -489,22 +489,22 @@ SNIPPET
   fi
 
   # CLAUDE.md 已存在，检查标记
-  if grep -q "FOUR-GATE-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
+  if grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
     # 标记已存在 → 替换内容（支持升级）
     local tmp_file
     tmp_file="$(mktemp)"
     awk -v begin="$begin_marker" -v end="$end_marker" -v snippet="$snippet" '
-      index($0, "FOUR-GATE-AI-WORKFLOW-BEGIN") > 0 {
+      $0 ~ /FOUR-[^-]+-AI-WORKFLOW-BEGIN/ {
         print begin
         print snippet
         getline
-        while (index($0, "FOUR-GATE-AI-WORKFLOW-END") == 0) { getline }
+        while ($0 !~ /FOUR-[^-]+-AI-WORKFLOW-END/) { getline }
         print end
         next
       }
       { print }
     ' "$target" > "$tmp_file" && mv "$tmp_file" "$target"
-    log "更新 CLAUDE.md 中的四闸门片段"
+    log "更新 CLAUDE.md 中的四阶段片段"
   else
     # 无标记 → 追加
     {
@@ -512,7 +512,7 @@ SNIPPET
       printf '%s\n' "$snippet"
       printf '%s\n' "$end_marker"
     } >> "$target"
-    log "追加四闸门片段到 CLAUDE.md"
+    log "追加四阶段片段到 CLAUDE.md"
   fi
 }
 
@@ -522,7 +522,7 @@ print_summary() {
   local awd="$proj/ai-workflow"
 
   separator
-  printf '\n  ══ 四闸门工作流 · 部署完成 ══\n\n'
+  printf '\n  ══ 四阶段工作流 · 部署完成 ══\n\n'
 
   printf '  ✓ 全局: Skills 已安装到 ~/.claude/skills/\n'
   [ -n "$proj" ] && printf '  ✓ 项目: %s\n' "$proj"
@@ -562,17 +562,17 @@ do_project_uninstall() {
 
   # 移除 CLAUDE.md 中的标记区域
   local target="$proj/CLAUDE.md"
-  if [ -f "$target" ] && grep -q "FOUR-GATE-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
+  if [ -f "$target" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
     local tmp_file
     tmp_file="$(mktemp)"
     awk '
-      /FOUR-GATE-AI-WORKFLOW-BEGIN/ { skip=1; next }
-      /FOUR-GATE-AI-WORKFLOW-END/   { skip=0; next }
+      /FOUR-[^-]+-AI-WORKFLOW-BEGIN/ { skip=1; next }
+      /FOUR-[^-]+-AI-WORKFLOW-END/   { skip=0; next }
       !skip { print }
     ' "$target" > "$tmp_file" && mv "$tmp_file" "$target"
-    log "移除 CLAUDE.md 中的四闸门片段"
+    log "移除 CLAUDE.md 中的四阶段片段"
   else
-    skip "CLAUDE.md 中无四闸门片段"
+    skip "CLAUDE.md 中无四阶段片段"
   fi
 
   # 确认删除 ai-workflow/
@@ -603,16 +603,16 @@ do_project_check() {
 
   # CLAUDE.md 标记
   local target="$proj/CLAUDE.md"
-  if [ -f "$target" ] && grep -q "FOUR-GATE-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
-    log "CLAUDE.md 四闸门片段已注入"
+  if [ -f "$target" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
+    log "CLAUDE.md 四阶段片段已注入"
   else
-    printf '  ✗ CLAUDE.md 未注入四闸门片段\n'
+    printf '  ✗ CLAUDE.md 未注入四阶段片段\n'
   fi
 
   # 关键文件
   [ -f "$awd/环境真相档案.md" ] && log "环境真相档案.md 存在" || printf '  ✗ 环境真相档案.md 缺失\n'
   [ -f "$awd/取值地图指南.md" ] && log "取值地图指南.md 存在" || printf '  ✗ 取值地图指南.md 缺失\n'
-  [ -f "$awd/四闸门蓝图.md" ] && log "四闸门蓝图.md 存在" || printf '  ✗ 四闸门蓝图.md 缺失\n'
+  [ -f "$awd/四阶段蓝图.md" ] && log "四阶段蓝图.md 存在" || printf '  ✗ 四阶段蓝图.md 缺失\n'
 
   # 待填项统计
   if [ -f "$awd/环境真相档案.md" ]; then
@@ -652,7 +652,7 @@ main() {
   fi
 
   separator
-  printf '  四闸门 AI 开发工作流 · deploy.sh\n'
+  printf '  四阶段 AI 开发工作流 · deploy.sh\n'
   separator
 
   case "$mode" in

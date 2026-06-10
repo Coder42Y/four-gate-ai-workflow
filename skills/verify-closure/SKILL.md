@@ -1,11 +1,11 @@
 ---
 name: verify-closure
-description: 反「假成功」的收尾验证闸门（闸门3）。在宣称"修好了/部署成功/应该没问题"之前，按"改动类型→必需实证"矩阵强制取得线上实证，无实证不许下完成结论。专治这类项目（远端CI编译+手工运维+流程引擎+无Flyway）里"代码看着对但线上是旧码/旧jar/旧缓存/引擎没动"的假成功。当用户说「验证一下」「修好了吗」「上线了没」「确认生效」「部署成功了吗」「线上验一下」「verify done」「is it deployed」，或 AI 自己准备说"已修复/已完成/应该可以了"之前，必须触发。
+description: 反「假成功」的收尾验证阶段（阶段3）。在宣称"修好了/部署成功/应该没问题"之前，按"改动类型→必需实证"矩阵强制取得线上实证，无实证不许下完成结论。专治这类项目（远端CI编译+手工运维+流程引擎+无Flyway）里"代码看着对但线上是旧码/旧jar/旧缓存/引擎没动"的假成功。当用户说「验证一下」「修好了吗」「上线了没」「确认生效」「部署成功了吗」「线上验一下」「verify done」「is it deployed」，或 AI 自己准备说"已修复/已完成/应该可以了"之前，必须触发。
 ---
 
-# 验证闭环 Skill · 反假成功（闸门 3）
+# 验证闭环 Skill · 反假成功（阶段 3）
 
-> **SSOT**：本 skill 与 `ai-workflow/四闸门蓝图.md` 闸门 3 一致。它把"完成"从"我改完了"重定义为"我有线上实证"。
+> **SSOT**：本 skill 与 `ai-workflow/四阶段蓝图.md` 阶段 3 一致。它把"完成"从"我改完了"重定义为"我有线上实证"。
 
 ## 一、铁律（违反即视为本 skill 失败）
 
@@ -68,7 +68,7 @@ git diff --name-only HEAD
 
 | 必需实证 | 怎么取（脱敏实例） | 不做的后果 |
 |---|---|---|
-| 1. **远端已收到新码** | `git ls-remote origin <branch>` 的 HEAD == 本地 HEAD | 本地 commit 没 push，Jenkins 从 内部 Git 远端 拉的是旧码，部署 SUCCESS 但全是旧逻辑（`example-case`） |
+| 1. **远端已收到新码** | `git ls-remote origin <branch>` 的 HEAD == 本地 HEAD | 本地 commit 没 push，Jenkins 从内部 Git 远端拉的是旧码，部署 SUCCESS 但全是旧逻辑（`example-case`） |
 | 2. 构建成功且是新构建号 | 轮询 Jenkins 构建号 / `result=SUCCESS` / 读 `consoleText` | 构建失败却以为成功 |
 | 3. **jar 真的换新了** | 30 秒 typeName 探针：开"类别 A 合同(typeA)"详情，看 `typeName`="类别 A"(新) vs "类别 B"(旧)（`example-case`） | 前端发了但后端 jar 是旧的，"全没改好" |
 | 4. 接口实测 | `browser_evaluate` 带 `Authorization`+`x-tenant-id` 调 `/backend-service/...`，看返回 | —— |
@@ -80,14 +80,14 @@ git diff --name-only HEAD
 | 必需实证 | 怎么取（脱敏实例） | 不做的后果 |
 |---|---|---|
 | 1. **列真的建了** | `information_schema.columns` 实查该列存在 | 目标环境 **无 Flyway**，迁移脚本不会自动跑，"加列+代码引用该列"部署即崩 BUSINESS_ERROR_CODE（mapper 查不存在的列，`example-case`） |
-| 2. ALTER 已手工执行 | 在目标环境手工跑 `ALTER TABLE ... ADD COLUMN`（**普通 ADD，不能用 `IF NOT EXISTS`**——目标环境 是 目标环境 MySQL 版本 不支持，会报 1064，`example-case`） | 列没建，代码引用即异常 |
+| 2. ALTER 已手工执行 | 在目标环境手工跑 `ALTER TABLE ... ADD COLUMN`（**普通 ADD，不能用 `IF NOT EXISTS`**——需按目标环境 MySQL 方言实测，`example-case`） | 列没建，代码引用即异常 |
 | 3. 顺序铁律 | **先 ALTER 补列，再上引用该列的代码**——顺序反了必崩 | —— |
 
 ### D. 流程引擎改动（审批/回调/节点）
 
 | 必需实证 | 怎么取（脱敏实例） | 不做的后果 |
 |---|---|---|
-| 1. **先确认是不是代码问题**（回闸门 0） | 很多流程"bug"是配置/运维：按钮占位 key=编辑器没勾命令按钮（`example-case`）；引擎不发回调=事件派发服务停摆（`example-case`） | 为非代码问题写代码 |
+| 1. **先确认是不是代码问题**（回阶段 0） | 很多流程"bug"是配置/运维：按钮占位 key=编辑器没勾命令按钮（`example-case`）；引擎不发回调=事件派发服务停摆（`example-case`） | 为非代码问题写代码 |
 | 2. 节点 i18n/命令按钮已在**编辑器逐节点配并发布** | 进流程编辑器核对，重新发布 | 按钮显示占位 key |
 | 3. 流程变量已注入 | 走到该网关/节点实测，不报 `No such property`（`example-case`） | 网关变量缺失流程卡死 |
 | 4. **手动 POST 回调→状态翻转**实证链路 | 手动 POST 回调端点，看业务状态变 APPROVED；引擎自动回调要单独验（可能运维停摆） | 以为链路通、其实引擎没发 |

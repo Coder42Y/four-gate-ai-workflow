@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>四闸门 AI 开发工作流 · 工程蓝图</title>
+<title>四阶段 AI 开发工作流 · 工程蓝图</title>
 <script>document.documentElement.className += ' js';</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -235,7 +235,7 @@
 
 <div class="topbar">
   <span>团队方法论 · 实战提炼 <b>/ 同栈可推广</b></span>
-  <span>DOC. <b>四闸门 v1</b> · 2026</span>
+  <span>DOC. <b>四阶段 v1</b> · 2026</span>
 </div>
 
 <!-- HERO -->
@@ -244,7 +244,7 @@
     <div class="sheet rise d1">
       <span>流程引擎</span><span>配置中心</span><span>权限系统</span><span>远端 CI 编译</span><span>手工运维</span>
     </div>
-    <h1 class="rise d2"><span class="four">四闸门</span><br>AI 开发工作流<span class="en">FOUR-GATE WORKFLOW FOR EXTERNAL-DEPENDENT SYSTEMS</span></h1>
+    <h1 class="rise d2"><span class="four">四阶段</span><br>AI 开发工作流<span class="en">FOUR-STAGE WORKFLOW FOR EXTERNAL-DEPENDENT SYSTEMS</span></h1>
     <p class="creed rise d3">让“对的做法”成为<b>阻力最小的路径</b>。机器能判定的硬卡，要判断的用 Skill 把“遵守”做得比“不遵守”还省事——绝不靠一份没人看的规范。</p>
     <div class="meta rise d4">
       <span>来源 / <i>真实开发会话</i></span>
@@ -287,8 +287,8 @@
 <!-- PIPELINE -->
 <section>
   <div class="wrap">
-    <div class="sechead rise"><span class="no">02</span><h2>脊柱 · 四道闸门</h2></div>
-    <p class="seclead rise">一次任务的生命周期，按 <b>0 → 1 → 2 → 3</b> 顺序过闸，不跳步。每道闸堵一类最贵的错误。</p>
+    <div class="sechead rise"><span class="no">02</span><h2>脊柱 · 四个阶段</h2></div>
+    <p class="seclead rise">一次任务的生命周期，按 <b>0 → 1 → 2 → 3</b> 顺序按阶段执行，不跳步。每道闸堵一类最贵的错误。</p>
     <div class="pipe-wrap">
       <div class="pipe-rail"><span class="flow"></span></div>
       <div class="gates">
@@ -330,14 +330,14 @@
         </div>
       </div>
     </div>
-    <div class="pipe-foot rise"><span class="ar">↺</span> 回灌：闸门 0/3 抓到新真相，当场写回档案——AI 抄写、人审、合并。档案是活体，不是死文档。</div>
+    <div class="pipe-foot rise"><span class="ar">↺</span> 回灌：阶段 0/3 抓到新真相，当场写回档案——AI 抄写、人审、合并。档案是活体，不是死文档。</div>
   </div>
 </section>
 
 <!-- VALUE MAP -->
 <section>
   <div class="wrap">
-    <div class="sechead rise"><span class="no">03</span><h2>闸门 2 · 不写死 ID 的真正含义</h2></div>
+    <div class="sechead rise"><span class="no">03</span><h2>阶段 2 · 不写死 ID 的真正含义</h2></div>
     <p class="seclead rise">挑战一个直觉误区：很多人以为“不写死 ID”＝别写裸数字、改成查字典。<b>这个理解不够，甚至有害。</b>真正的杀手不是“写了字面量”，而是“取值走了一条看似合理、实则错误的路”。</p>
     <div class="twocol">
       <div class="vbox wrong rise">
@@ -363,14 +363,14 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
 <span class="cm">// 码值自洽，不会静默变空</span></pre>
       </div>
     </div>
-    <p class="vnote rise"><b>机制 ›</b> grep 魔法数字的 lint 根本抓不到这两个坑——它们走的是真·API。所以闸门 2 的中心是一份 <b>「取值地图」</b>：每个外部概念钉到唯一正路，表里没有的<b>停下问人，绝不自创查法</b>；review 查的是“有没有绕开正路”，而非“有没有裸数字”。</p>
+    <p class="vnote rise"><b>机制 ›</b> grep 魔法数字的 lint 根本抓不到这两个坑——它们走的是真·API。所以阶段 2 的中心是一份 <b>「取值地图」</b>：每个外部概念钉到唯一正路，表里没有的<b>停下问人，绝不自创查法</b>；review 查的是“有没有绕开正路”，而非“有没有裸数字”。</p>
   </div>
 </section>
 
 <!-- MATRIX -->
 <section>
   <div class="wrap">
-    <div class="sechead rise"><span class="no">04</span><h2>闸门 3 · 改动类型 → 必需实证</h2></div>
+    <div class="sechead rise"><span class="no">04</span><h2>阶段 3 · 改动类型 → 必需实证</h2></div>
     <p class="seclead rise">该验证哪几环，<b>取决于你改了什么</b>。这是密度最高的痛点，也是落地第一枪。</p>
     <div class="matrix rise">
       <div class="mrow head"><div class="mc">改动类型</div><div class="mc">必需实证</div><div class="mc">不做的后果</div></div>
@@ -430,9 +430,9 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
       <div class="lt rise">
         <h3>踩坑即回灌</h3>
         <ol>
-          <li><b>谁发现谁回灌 ›</b> 闸门 3 抓到假成功、或闸门 0 查出非代码真因，当场写回对应资产。</li>
+          <li><b>谁发现谁回灌 ›</b> 阶段 3 抓到假成功、或阶段 0 查出非代码真因，当场写回对应资产。</li>
           <li><b>AI 当抄写员 ›</b> 任务收尾，AI 主动产出“本次新学到的外部真相”草稿——它刚踩完坑，最便宜的记录者。</li>
-          <li><b>人审是闸门 ›</b> 出口从“个人机 memory”改成“项目 PR”，人审一下再合并，防写错 / 写冗余。</li>
+          <li><b>人审是阶段 ›</b> 出口从“个人机 memory”改成“项目 PR”，人审一下再合并，防写错 / 写冗余。</li>
           <li><b>review 卡点 ›</b> reviewer 必问“这次学到新外部真相了吗？入档了吗？”——没回灌的 PR 不算完。</li>
         </ol>
       </div>

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 四闸门工作流 · 一键安装/卸载
+# 四阶段工作流 · 一键安装/卸载
 # 用法:
 #   bash 安装.sh            把两个 Skill 软链进 ~/.claude/skills/（与 code-self-review 同机制）
 #   bash 安装.sh --check    只检查当前安装状态，不改动
@@ -53,7 +53,7 @@ do_install() {
   log ""
   log "下一步(可选，需你确认):"
   log "  - 把 环境真相档案.md 复制进目标项目根"
-  log "  - 把 CLAUDE.md片段-回灌与闸门.md 粘进项目 CLAUDE.md"
+  log "  - 把 CLAUDE.md片段-回灌与阶段纪律.md 粘进项目 CLAUDE.md"
   log "  - 把 取值地图增补.md §6.9 并进 code-self-review（SSOT 在 原项目 仓，改前确认）"
 }
 
