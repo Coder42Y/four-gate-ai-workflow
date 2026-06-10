@@ -23,15 +23,40 @@
 | `skills/ai-task-preflight/SKILL.md` | 开工前准备：把模糊需求问成任务简报 | 软链进 Claude/Codex skills |
 | `skills/verify-closure/SKILL.md` | 阶段3 · 验证闭环（**第一枪**） | 软链进 Claude/Codex skills |
 | `skills/attribute-rootcause/SKILL.md` | 阶段0 · 归因 | 软链进 Claude/Codex skills |
+| `claude-skills/four-stage-install/SKILL.md` | Claude Code 命令入口：`/four-stage-install` | 全局装一次 |
+| `install-claude-command.sh` | 安装 Claude Code 命令入口 | 给同事第一次配置用 |
 | `安装.sh` | 一键软链两个 Skill（幂等/可卸载） | `bash 安装.sh`（旧版，推荐用 `deploy.sh`） |
 | `deploy.sh` | **一键部署**：全局 Skills + 项目级模板 + CLAUDE.md 注入 | `bash deploy.sh /path/to/project` |
 | `四阶段工作流.html` | 静态说明页，用于讲解方法论 | 浏览器直接打开 |
 
 > 配套读 `../AI全栈开发工作流指南.md`（**描述性**：AI 实际做了什么、数千次调用分布）。本套是**规范性**：该强制什么。
 
-## 一键部署
+## 推荐入口：Claude Code `/four-stage-install`
 
-给同事的推荐一行命令：
+给 Claude Code 用户的推荐路径：先全局安装一次命令入口，之后每个新业务 repo 里用 slash command 接入。
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh | bash
+```
+
+之后每个新业务 repo：
+
+```bash
+cd /path/to/business-repo
+claude
+```
+
+在 Claude Code 里输入：
+
+```text
+/four-stage-install
+```
+
+它会在**当前业务 repo** 自动执行远程 bootstrap，生成 `ai-workflow/`、注入 `CLAUDE.md`，并全局安装/更新四阶段 workflow skills。日常 coding 不需要进入本仓库。
+
+## 命令行部署
+
+不用 Claude Code slash command 时，也可以在目标业务项目根目录直接运行：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash -s -- --with-review-addon /path/to/your/project
@@ -67,7 +92,7 @@ bash deploy.sh --uninstall /path/to/your/project
 
 部署后需手动完成：编辑 `ai-workflow/环境真相档案.md` 中的 `[待填]` 项。
 
-`四阶段工作流.html` 只是静态说明页，适合打开给团队讲这套方法。真正的落地入口仍是 `deploy.sh` 和生成到项目里的 `ai-workflow/` 文档。
+`四阶段工作流.html` 只是静态说明页，适合打开给团队讲这套方法。真正的落地入口是 Claude Code `/four-stage-install`，或命令行 `bootstrap.sh` / `deploy.sh`；项目内落地资产是生成到业务 repo 的 `ai-workflow/` 文档。
 
 > 旧版 `安装.sh` 仍可用（仅做全局 skill 软链），建议迁移到 `deploy.sh`。
 
@@ -83,13 +108,13 @@ bash deploy.sh --uninstall /path/to/your/project
 
 ## 最小起步（三天）
 
-0. **装** `bash deploy.sh /path/to/project`（一键搞定全局 + 项目）。
+0. **装**：Claude Code 用户先装 `/four-stage-install`，每个业务 repo 第一次输入 `/four-stage-install`；命令行用户可直接跑远程 `bootstrap.sh`。
 1. **Day1** 启用 `ai-task-preflight` + `verify-closure`：先把需求问清楚，再立铁律"没实证不说修好了"。
 2. **Day2** 完善 `ai-workflow/环境真相档案.md`，AI 每会话先读。
 3. **Day3** 建立取值地图 + 执行 `bash deploy.sh --install-review-addon` 并进 `code-self-review` §6.9。
 
 详见 `推广手册.md` §4。
 
-## 真正新建的只有 3 个 Skill
+## 真正新建的日常 Skill 只有 3 个
 
-开工准备、验证、归因。取值地图复用 `code-self-review`；真相档案是文档；回灌是习惯。**刻意不臃肿。**
+开工准备、验证、归因。另有一个 Claude Code 安装命令 `/four-stage-install`，只负责把本工作流接入当前业务 repo，不参与日常编码判断。取值地图复用 `code-self-review`；真相档案是文档；回灌是习惯。**刻意不臃肿。**
