@@ -444,19 +444,19 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
 <section>
   <div class="wrap">
     <div class="sechead rise"><span class="no">06</span><h2>三天起步 · 拿第一个胜仗</h2></div>
-    <p class="seclead rise">冷启动最忌一上来铺一大套。按 ROI 可证性排，<b>第一枪打验证闭环</b>——一旦拦下一次“本要当作修好上线的假成功”，就是周会能讲的硬故事。</p>
+    <p class="seclead rise">冷启动最忌一上来铺一大套。先把任务问清楚，再用验证闭环拿第一个可讲的硬故事。</p>
     <div class="days">
       <div class="day rise">
         <div class="dh">Day · 00</div>
-        <h4>装第一枪</h4>
-        <p>软链两个 Skill，与现有 review skill 同机制。</p>
-        <code class="cmd">bash 安装.sh</code>
+        <h4>装工作流</h4>
+        <p>软链三个 Skill 到 Claude / Codex，与现有 review skill 同机制。</p>
+        <code class="cmd">bash deploy.sh</code>
       </div>
       <div class="day rise">
         <div class="dh">Day · 01</div>
-        <h4>启用验证闭环</h4>
-        <p>立铁律“没实证不说修好了”，立刻开始拦假成功。</p>
-        <code class="cmd">skill › verify-closure</code>
+        <h4>先问清楚</h4>
+        <p>模糊任务先形成任务简报，再立铁律“没实证不说修好了”。</p>
+        <code class="cmd">skill › ai-task-preflight</code>
       </div>
       <div class="day rise">
         <div class="dh">Day · 02</div>
@@ -467,8 +467,8 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
       <div class="day rise">
         <div class="dh">Day · 03</div>
         <h4>补归因 + 取值地图</h4>
-        <p>归因 Skill 上线；取值检查并进 review skill。</p>
-        <code class="cmd">skill › attribute-rootcause</code>
+        <p>归因 Skill 上线；取值检查自动并进 review skill。</p>
+        <code class="cmd">deploy.sh --install-review-addon</code>
       </div>
     </div>
   </div>
@@ -476,12 +476,12 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
 
 <!-- CLOSE -->
 <div class="close wrap">
-  <p class="big rise">把 AI 从“自信的代码生成器”，变成<br><b>先归因、先核对真相、走唯一正路、拿实证才收口、踩坑即沉淀</b><br>的资深协作者。</p>
+  <p class="big rise">把 AI 从“自信的代码生成器”，变成<br><b>先问清楚、再归因、核对真相、走唯一正路、拿实证才收口</b><br>的资深协作者。</p>
   <div class="sig rise">这套纪律来自一个月的真实血泪 · 不是纸上谈兵</div>
 </div>
 
 <footer>
-  <div class="wrap">真正新建的 Skill 只有 <b>2 个</b>（验证 · 归因）— 取值地图复用现有 review skill，真相档案是文档，回灌是习惯。<b>刻意不臃肿。</b></div>
+  <div class="wrap">真正新建的 Skill 只有 <b>3 个</b>（开工准备 · 验证 · 归因）— 取值地图复用现有 review skill，真相档案是文档，回灌是习惯。<b>刻意不臃肿。</b></div>
 </footer>
 
 <script>
