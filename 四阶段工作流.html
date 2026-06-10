@@ -234,7 +234,7 @@
 <body>
 
 <div class="topbar">
-  <span>团队方法论 · 实战提炼 <b>/ 同栈可推广</b></span>
+  <span>团队方法论 <b>/ 通用 AI 开发工作流</b></span>
   <span>DOC. <b>四阶段 v1</b> · 2026</span>
 </div>
 
@@ -242,15 +242,15 @@
 <header class="hero">
   <div class="wrap">
     <div class="sheet rise d1">
-      <span>流程引擎</span><span>配置中心</span><span>权限系统</span><span>远端 CI 编译</span><span>手工运维</span>
+      <span>外部依赖</span><span>配置中心</span><span>权限系统</span><span>CI/CD</span><span>验证闭环</span>
     </div>
     <h1 class="rise d2"><span class="four">四阶段</span><br>AI 开发工作流<span class="en">FOUR-STAGE WORKFLOW FOR EXTERNAL-DEPENDENT SYSTEMS</span></h1>
     <p class="creed rise d3">让“对的做法”成为<b>阻力最小的路径</b>。机器能判定的硬卡，要判断的用 Skill 把“遵守”做得比“不遵守”还省事——绝不靠一份没人看的规范。</p>
     <div class="meta rise d4">
-      <span>来源 / <i>脱敏复盘</i></span>
-      <span>区间 / <i>一个月实战</i></span>
-      <span>样本 / <i>多次任务 · 多轮工具调用</i></span>
-      <span>沉淀 / <i>多条踩坑记忆</i></span>
+      <span>定位 / <i>真实业务开发</i></span>
+      <span>机制 / <i>阶段契约</i></span>
+      <span>产物 / <i>任务简报 · 取值地图 · 验证证据</i></span>
+      <span>沉淀 / <i>项目档案回灌</i></span>
     </div>
   </div>
 </header>
@@ -266,19 +266,19 @@
         <div class="ix">TRAP_01</div>
         <h3>真相不在代码里</h3>
         <p>配置中心、字典码值、组织维度、有没有数据库迁移框架——AI 读穿代码也推不出来，只能被告知或去现场探。</p>
-        <div class="ev"><b>实证 ›</b> 扁平查字典把“类别 A”显示成另一个类目；无迁移框架时加列即崩。</div>
+        <div class="ev"><b>表现 ›</b> 合法 API 也可能取错值；目标环境迁移缺失时加列即崩。</div>
       </div>
       <div class="trap rise">
         <div class="ix">TRAP_02</div>
         <h3>改完 ≠ 生效</h3>
-        <p>代码不在本机跑，靠远端 CI 编译 + 手工运维部署。旧码 / 旧 jar / 旧缓存可藏在任意一环。</p>
-        <div class="ev"><b>实证 ›</b> 本地不 push→CI 编的全是旧码；部署 SUCCESS 但 jar 是旧的。</div>
+        <p>代码不只在本机生效，旧码 / 旧包 / 旧缓存可藏在任意一环。</p>
+        <div class="ev"><b>表现 ›</b> 本地未同步远端→CI 编旧码；部署 SUCCESS 但目标环境仍是旧版本。</div>
       </div>
       <div class="trap rise">
         <div class="ix">TRAP_03</div>
         <h3>行为由配置决定</h3>
         <p>流程引擎 / 配置中心 / 权限系统——很多“bug”根本不是代码问题，写代码去修反而引入新 bug。</p>
-        <div class="ev"><b>实证 ›</b> 审批按钮占位符＝编辑器没配；引擎不发回调＝运维停摆。</div>
+        <div class="ev"><b>表现 ›</b> 按钮占位符＝配置未发布；外部流程不回调＝服务或规则未生效。</div>
       </div>
     </div>
   </div>
@@ -376,8 +376,8 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
       <div class="mrow head"><div class="mc">改动类型</div><div class="mc">必需实证</div><div class="mc">不做的后果</div></div>
       <div class="mrow">
         <div class="mc k"><span class="sq"></span>后端</div>
-        <div class="mc"><span class="cmd">git ls-remote origin</span> == 本地 HEAD <b>+</b> 版本探针验 jar 新旧</div>
-        <div class="mc">没 push→CI 拉旧码，部署 SUCCESS 全是旧逻辑</div>
+        <div class="mc"><span class="cmd">git ls-remote origin</span> == 本地 HEAD <b>+</b> 版本/业务探针验目标环境</div>
+        <div class="mc">未同步远端→CI 拉旧码，部署 SUCCESS 全是旧逻辑</div>
       </div>
       <div class="mrow">
         <div class="mc k"><span class="sq"></span>前端</div>
@@ -477,7 +477,7 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
 <!-- CLOSE -->
 <div class="close wrap">
   <p class="big rise">把 AI 从“自信的代码生成器”，变成<br><b>先问清楚、再归因、核对真相、走唯一正路、拿实证才收口</b><br>的资深协作者。</p>
-  <div class="sig rise">这套纪律来自脱敏项目复盘 · 不是纸上谈兵</div>
+  <div class="sig rise">这套纪律面向真实业务开发 · 以证据关闭任务</div>
 </div>
 
 <footer>

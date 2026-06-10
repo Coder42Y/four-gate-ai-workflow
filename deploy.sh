@@ -142,7 +142,7 @@ review_addon_block() {
 | 检测 | 命令 / 模式 | 命中判定 | 正路 |
 |------|-------------|---------|------|
 | 字典名扁平查（跨级串值） | `git grep -nE 'getCodeNameByParentCodeType' -- 'backend-module/*'` | ❌ | `selectByParentCodeType` 按层级（`TypeNameResolver`） |
-| 合同状态名查字典（静默变空） | `git grep -nE 'codeUtils.*(contract_status\|getCodeName).*status' -- 'backend-module/*'` 后人工核对是否在取状态名 | ❌ | `BusinessStatusEnum.getName` |
+| 业务状态名查错字典（静默变空） | `git grep -nE 'codeUtils.*(status\|getCodeName)' -- 'backend-module/*'` 后人工核对是否在取业务状态名 | ⚠️ 错字典则 ❌ | 项目取值地图中的状态枚举/状态转换器 |
 | 审批人单维度取岗（找不到人） | `git grep -nE '(APPROVER_ROLE\|selectApproverIds)' -- 'backend-module/*'` 后核对是否带回退 | ⚠️ 无回退则 ❌ | `selectApproversWithFallback`（部门→签约主体回退） |
 | 全量组织却用受限子集 | `git grep -nE 'UserScopedDepartmentApi' -- 'frontend-app/src/*'` 后核对该处是否需"全量组织架构" | ⚠️ 需全量却用它则 ❌ | 页面侧不带 userId 调 `getOrganTree` 取 `orgType=3` |
 | 选择器带出字段未往返 | `git grep -nE '(setOrgan\|setSignEntity\|选人回调).*(Name\|Id)' -- 'frontend-app/src/*'` 后核对 payload/VO/loadDetail 是否齐 | ⚠️（人工确认完整往返） | payload+列+VO+loadDetail 全补 |
@@ -152,7 +152,7 @@ review_addon_block() {
 
 ```bash
 git grep -nE 'getCodeNameByParentCodeType' -- 'backend-module/*'
-git grep -nE 'codeUtils.*contract_status' -- 'backend-module/*'
+git grep -nE 'codeUtils.*(status|getCodeName)' -- 'backend-module/*'
 git grep -nE 'UserScopedDepartmentApi' -- 'frontend-app/src/*'
 git grep -nE 'APPROVER_ROLE' -- 'backend-module/*'
 ```
@@ -520,7 +520,7 @@ ${sec_frontend}
 
 ## 七、协作/边界真相
 
-- **需求管理系统：** [待填：Jira/其他]
+- **需求/缺陷管理平台：** [待填]
 - **哪些仓库/模块是只读边界？** [待填]
 - **危险动作清单（写库、部署、删数据等）：** [待填]
 
@@ -560,9 +560,9 @@ generate_value_map_guide() {
 > 代码调用了正确的 API，但**走错了取值路径**，导致数据错误。这类 bug 裸眼看不出来，grep 硬编码数字也抓不到（因为用的都是合法 API），只有跑起来才会出问题。
 
 **典型场景：**
-- 用扁平字典查询去查层级树 → 值交叉污染（"类别 A"串成"类别 B"）
+- 用扁平字典查询去查层级树 → 值交叉污染
 - 用错误的 key 取配置值 → 拿到别的业务的值
-- 查 foundation 状态字典取业务状态 → 码值对不上 → 静默变空
+- 用不匹配的字典取业务状态 → 码值对不上 → 静默变空
 - 用单维度取岗位 → 维度不兼容 → 找不到审批人
 
 ## 如何建立取值地图？
@@ -570,10 +570,10 @@ generate_value_map_guide() {
 ### Step 1: 梳理外部概念
 
 找出项目中所有"从外部系统取值"的概念：
-- 数据字典（组织类型、合同类型、状态枚举...）
+- 数据字典（组织类型、业务类型、状态枚举...）
 - 岗位/角色/权限
 - 外部系统 ID（appId、tenantId...）
-- 配置中心（nacos）中的关键配置项
+- 配置中心中的关键配置项
 - 流程引擎中的变量和回调
 
 ### Step 2: 钉到唯一正路
@@ -615,16 +615,16 @@ inject_claude_md() {
 
 ## AI 开发纪律 · 四阶段（本项目强制）
 
-> 这是「配置即行为 + 远端CI + 手工运维」项目的纪律。详规见 `ai-workflow/四阶段蓝图.md`。**按 0→1→2→3 顺序执行，不跳步。**
+> 这是面向真实业务开发的 AI 协作纪律。详规见 `ai-workflow/四阶段蓝图.md`。**按 0→1→2→3 顺序执行，不跳步。**
 
 ### 阶段 0 · 归因（动码前先定层）
 动任何代码前，先把问题钉到 **代码 / 配置 / 运维 / 数据** 某一层并给证据。
 **不是"代码"层就不许写代码**——先去对应层求证。
-（流程引擎/nacos/UIM 里一半"bug"是配置/运维，写代码修=白费+引新 bug。触发 `attribute-rootcause` skill。）
+（配置中心、权限系统、流程引擎、外部服务里的很多"bug"不是代码问题，写代码修=白费+引新 bug。触发 `attribute-rootcause` skill。）
 
 ### 阶段 1 · 外部真相（先核对，再动手）
 动手前读 `ai-workflow/环境真相档案.md`（或本 CLAUDE.md 的"环境真相"段）。
-**结构性真相入档案、运行时状态现场探针**——别把"列建了没/jar 新不新"写死进文档（必过期），也别靠现探去问稳定结构。
+**结构性真相入档案、运行时状态现场探针**——别把"列建了没/目标环境是不是新版本"写死进文档（必过期），也别靠现探去问稳定结构。
 
 ### 阶段 2 · 取值地图（不写死 ID 的真正含义）
 取任何外部值前查「取值地图」（档案 §四）把概念钉到**唯一正路**。
@@ -633,7 +633,7 @@ inject_claude_md() {
 ### 阶段 3 · 验证闭环（无实证不许说"修好了"）
 **铁律**：「修好了 / 部署成功 / 应该没问题 / 已完成」这类话，没有线上实证一律不许说出口。Evidence before assertions。
 按改动类型取实证（触发 `verify-closure` skill）：
-- 后端：确认代码已 push + 构建新 jar
+- 后端：确认代码已同步远端 + 目标环境版本/业务探针已更新
 - DB：实查列存在（**确认是否有自动迁移**）
 - 前端：清缓存重登后线上验
 - **部署 SUCCESS ≠ 生效**
