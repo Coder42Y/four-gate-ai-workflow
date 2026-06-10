@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四阶段 AI 开发工作流 · 使用说明</title>
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --surface: #ffffff;
+    --surface-2: #fbfaf6;
+    --ink: #1d2433;
+    --muted: #596172;
+    --faint: #8a8174;
+    --line: #ded8cc;
+    --blue: #2266a8;
+    --green: #16845f;
+    --amber: #b87918;
+    --red: #c9473f;
+    --code-bg: #101722;
+    --code-ink: #e9eef5;
+    --radius: 8px;
+    --shadow: 0 16px 42px -30px rgba(29, 36, 51, .45);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, rgba(222, 216, 204, .42) 1px, transparent 1px),
+      linear-gradient(rgba(222, 216, 204, .42) 1px, transparent 1px),
+      var(--bg);
+    background-size: 42px 42px;
+    font-family: var(--sans);
+    line-height: 1.68;
+  }
+
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .shell {
+    width: min(1180px, calc(100% - 36px));
+    margin: 0 auto;
+  }
+
+  .top {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: center;
+    padding: 22px 0;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .top strong { color: var(--ink); font-weight: 700; }
+
+  .hero {
+    padding: 54px 0 34px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .eyebrow {
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 44px;
+    line-height: 1.16;
+    font-weight: 800;
+  }
+
+  .lead {
+    max-width: 720px;
+    margin: 22px 0 0;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  .hero-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+  }
+
+  .hero-panel h2,
+  section h2 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.28;
+  }
+
+  .hero-panel p { color: var(--muted); margin: 10px 0 0; }
+
+  .quick {
+    margin: 18px 0 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .quick-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  .num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: var(--blue);
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .quick-row:nth-child(2) .num { background: var(--green); }
+  .quick-row:nth-child(3) .num { background: var(--amber); }
+
+  .quick-row b { display: block; }
+  .quick-row span { display: block; color: var(--muted); font-size: 14px; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgba(246, 244, 239, .92);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-inner {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+
+  .nav a {
+    flex: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .nav a:hover {
+    background: var(--surface);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  section {
+    padding: 54px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-head {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+
+  .tag {
+    flex: none;
+    color: #fff;
+    background: var(--ink);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    line-height: 1.35;
+  }
+
+  .card p,
+  .card li {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .card ul,
+  .card ol {
+    margin: 12px 0 0;
+    padding-left: 20px;
+  }
+
+  .card strong { color: var(--ink); }
+
+  .command {
+    margin-top: 14px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--code-bg);
+    border: 1px solid #202c3d;
+  }
+
+  .command-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 12px;
+    border-bottom: 1px solid #253247;
+    color: #9fb0c8;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .copy {
+    border: 1px solid #3b4b63;
+    border-radius: 6px;
+    color: var(--code-ink);
+    background: #1b2637;
+    padding: 5px 9px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .copy:hover { background: #253247; }
+
+  pre {
+    margin: 0;
+    padding: 14px;
+    overflow-x: auto;
+    color: var(--code-ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.62;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: .94em;
+  }
+
+  .inline-code {
+    padding: 2px 5px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    background: var(--surface-2);
+  }
+
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .flow-step {
+    min-height: 128px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .flow-step:nth-child(2) { border-top-color: var(--green); }
+  .flow-step:nth-child(3) { border-top-color: var(--amber); }
+  .flow-step:nth-child(4) { border-top-color: var(--red); }
+
+  .flow-step b { display: block; margin-bottom: 6px; }
+  .flow-step span { color: var(--muted); font-size: 14px; }
+
+  .callout {
+    border-left: 4px solid var(--amber);
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    color: var(--muted);
+  }
+
+  .callout strong { color: var(--ink); }
+
+  .table {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+
+  th, td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+    font-size: 14px;
+  }
+
+  th {
+    color: var(--ink);
+    background: var(--surface-2);
+    font-weight: 700;
+  }
+
+  td { color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+
+  .ok { color: var(--green); font-weight: 700; }
+  .warn { color: var(--amber); font-weight: 700; }
+  .bad { color: var(--red); font-weight: 700; }
+
+  footer {
+    padding: 34px 0 48px;
+    color: var(--faint);
+    font-size: 13px;
+  }
+
+  @media (max-width: 900px) {
+    .hero,
+    .grid,
+    .two,
+    .flow {
+      grid-template-columns: 1fr;
+    }
+
+    h1 { font-size: 34px; }
+  }
+</style>
+</head>
+<body>
+  <div class="shell top">
+    <span><strong>四阶段 AI 开发工作流</strong> / 使用说明</span>
+    <span>先接入业务 repo，再日常调用</span>
+  </div>
+
+  <header class="shell hero">
+    <div>
+      <p class="eyebrow">HOW TO USE</p>
+      <h1>给同事照着操作的四阶段使用说明</h1>
+      <p class="lead">这个页面只解决一个问题：安装以后怎么在真实业务 repo 里调用。现有的 <span class="inline-code">四阶段工作流.html</span> 用来讲方法论；本页用来落地、培训、排错。</p>
+    </div>
+    <div class="hero-panel">
+      <h2>最短路径</h2>
+      <p>第一次装命令入口，之后每个新业务 repo 用 Claude Code slash command 接入。</p>
+      <div class="quick">
+        <div class="quick-row">
+          <div class="num">1</div>
+          <div><b>全局装一次</b><span>安装 Claude Code 命令 <code>/four-stage-install</code></span></div>
+        </div>
+        <div class="quick-row">
+          <div class="num">2</div>
+          <div><b>每个 repo 接入一次</b><span>在业务 repo 根目录启动 <code>claude</code>，输入 slash command</span></div>
+        </div>
+        <div class="quick-row">
+          <div class="num">3</div>
+          <div><b>日常自然语言调用</b><span>开工准备、归因、验证闭环都在业务 repo 里完成</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <a href="#install">安装入口</a>
+      <a href="#repo">接入新 repo</a>
+      <a href="#daily">日常调用</a>
+      <a href="#files">生成文件</a>
+      <a href="#commands">管理命令</a>
+      <a href="#trouble">排错</a>
+      <a href="#talk-track">介绍话术</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="install">
+      <div class="shell">
+        <div class="section-head"><span class="tag">01</span><h2>第一次：安装 Claude Code 命令入口</h2></div>
+        <div class="grid two">
+          <div class="card">
+            <h3>给同事复制这一条</h3>
+            <p>这一步只需要做一次。它会把 <code>/four-stage-install</code> 安装到当前用户的 Claude Code 全局 skills 目录。</p>
+            <div class="command">
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-install">复制</button></div>
+              <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh | bash</pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>它装了什么</h3>
+            <ul>
+              <li><code>~/.four-stage-ai-workflow</code>：缓存本工作流仓库。</li>
+              <li><code>~/.claude/skills/four-stage-install</code>：Claude Code slash command 入口。</li>
+              <li>安装完后，业务开发仍然在业务 repo 里做，不需要切到本仓库。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="repo">
+      <div class="shell">
+        <div class="section-head"><span class="tag">02</span><h2>每个新业务 repo：接入一次工作流</h2></div>
+        <div class="grid two">
+          <div class="card">
+            <h3>进入业务 repo</h3>
+            <p>注意是业务项目根目录，不是四阶段工作流仓库。</p>
+            <div class="command">
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-repo">复制</button></div>
+              <pre id="cmd-repo">cd /path/to/business-repo
+claude</pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>在 Claude Code 输入</h3>
+            <p>这个 slash command 会在当前业务 repo 执行远程 bootstrap。</p>
+            <div class="command">
+              <div class="command-head"><span>claude code</span><button class="copy" data-copy="#cmd-slash">复制</button></div>
+              <pre id="cmd-slash">/four-stage-install</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow" aria-label="安装流程">
+          <div class="flow-step"><b>更新缓存</b><span>拉取或更新 <code>~/.four-stage-ai-workflow</code></span></div>
+          <div class="flow-step"><b>安装 skills</b><span>软链到 <code>~/.claude/skills</code> 与 <code>~/.codex/skills</code></span></div>
+          <div class="flow-step"><b>注入项目</b><span>生成 <code>ai-workflow/</code>，注入 <code>CLAUDE.md</code></span></div>
+          <div class="flow-step"><b>开始使用</b><span>重开 Claude Code 会话后按四阶段处理任务</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="daily">
+      <div class="shell">
+        <div class="section-head"><span class="tag">03</span><h2>日常 coding：用自然语言触发</h2></div>
+        <div class="table">
+          <table>
+            <thead>
+              <tr>
+                <th>场景</th>
+                <th>直接对 Claude / Codex 说</th>
+                <th>作用</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>需求还模糊</td>
+                <td><code>开始前准备：帮我把这个需求问完整</code></td>
+                <td>触发 <code>ai-task-preflight</code>，先形成 AI 任务简报。</td>
+              </tr>
+              <tr>
+                <td>看到一个 bug</td>
+                <td><code>先归因，不要急着写代码。现象是：...</code></td>
+                <td>触发阶段 0，先判定代码 / 配置 / 运维 / 数据是哪层。</td>
+              </tr>
+              <tr>
+                <td>要完整处理一个任务</td>
+                <td><code>按四阶段工作流处理这个任务：...</code></td>
+                <td>按准备、归因、外部真相、取值地图、验证闭环的顺序做。</td>
+              </tr>
+              <tr>
+                <td>准备收尾</td>
+                <td><code>验证闭环：这次改动是否真的生效？</code></td>
+                <td>触发 <code>verify-closure</code>，没有实证不能说修好了。</td>
+              </tr>
+              <tr>
+                <td>提交前自查</td>
+                <td><code>提交前做 code-self-review，并检查取值地图</code></td>
+                <td>结合已有 <code>code-self-review</code> 检查取值绕路。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout" style="margin-top: 18px;">
+          <strong>使用边界：</strong>同一个业务 repo 接入后，日常 coding 不需要重复安装。换到另一个新业务 repo，第一次再输入一次 <code>/four-stage-install</code>。
+        </div>
+      </div>
+    </section>
+
+    <section id="files">
+      <div class="shell">
+        <div class="section-head"><span class="tag">04</span><h2>安装后会看到哪些文件</h2></div>
+        <div class="grid">
+          <div class="card">
+            <h3><code>CLAUDE.md</code></h3>
+            <p>注入四阶段纪律：动码前先归因、读环境真相档案、按取值地图走、收尾必须验证。</p>
+          </div>
+          <div class="card">
+            <h3><code>ai-workflow/环境真相档案.md</code></h3>
+            <p>项目级事实库。安装后必须搜索 <code>[待填]</code>，把部署链路、数据库真相、外部 ID、取值地图补齐。</p>
+          </div>
+          <div class="card">
+            <h3><code>ai-workflow/取值地图指南.md</code></h3>
+            <p>指导团队把外部值钉到唯一正路，防止“没有硬编码但走错 API”的隐性 bug。</p>
+          </div>
+          <div class="card">
+            <h3><code>ai-workflow/四阶段蓝图.md</code></h3>
+            <p>规范性总览，适合想理解完整设计的人读。</p>
+          </div>
+          <div class="card">
+            <h3><code>ai-workflow/四阶段工作流.html</code></h3>
+            <p>方法论介绍页，适合团队宣讲。</p>
+          </div>
+          <div class="card">
+            <h3><code>ai-workflow/四阶段使用说明.html</code></h3>
+            <p>本页。适合同事第一次使用时照着做。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="commands">
+      <div class="shell">
+        <div class="section-head"><span class="tag">05</span><h2>管理命令</h2></div>
+        <div class="grid two">
+          <div class="card">
+            <h3>查看状态</h3>
+            <p>检查全局 skills 和当前项目是否已接入。</p>
+            <div class="command">
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-check">复制</button></div>
+              <pre id="cmd-check">~/.four-stage-ai-workflow/deploy.sh --check .</pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>命令行兜底安装</h3>
+            <p>不用 Claude Code slash command 时，直接在业务 repo 根目录运行。</p>
+            <div class="command">
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-bootstrap">复制</button></div>
+              <pre id="cmd-bootstrap">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash</pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>安装 review 增补</h3>
+            <p>如果已有 <code>code-self-review</code>，可单独补取值地图 §6.9。</p>
+            <div class="command">
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-review">复制</button></div>
+              <pre id="cmd-review">~/.four-stage-ai-workflow/deploy.sh --install-review-addon</pre>
+            </div>
+          </div>
+          <div class="card">
+            <h3>卸载当前项目注入</h3>
+            <p>移除全局 skills，并可选择删除当前项目的 <code>ai-workflow/</code>。</p>
+            <div class="command">
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-uninstall">复制</button></div>
+              <pre id="cmd-uninstall">~/.four-stage-ai-workflow/deploy.sh --uninstall .</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="trouble">
+      <div class="shell">
+        <div class="section-head"><span class="tag">06</span><h2>常见问题</h2></div>
+        <div class="table">
+          <table>
+            <thead>
+              <tr>
+                <th>现象</th>
+                <th>原因</th>
+                <th>处理</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="bad">找不到</span> <code>/four-stage-install</code></td>
+                <td>第一次命令入口没装，或 Claude Code 会话还没重启。</td>
+                <td>重跑 <code>install-claude-command.sh</code>，然后重启 Claude Code。</td>
+              </tr>
+              <tr>
+                <td><span class="bad">误装到 workflow repo</span></td>
+                <td>启动 Claude Code 时所在目录不是业务 repo。</td>
+                <td>退出后 <code>cd</code> 到业务 repo 根目录，再输入 <code>/four-stage-install</code>。</td>
+              </tr>
+              <tr>
+                <td><span class="warn">code-self-review 增补未安装</span></td>
+                <td>本机没有安装 <code>code-self-review</code>，或路径不在默认候选里。</td>
+                <td>主工作流已完成；需要时用 <code>CODE_SELF_REVIEW_SKILL=/path/to/SKILL.md ~/.four-stage-ai-workflow/deploy.sh --install-review-addon</code>。</td>
+              </tr>
+              <tr>
+                <td><span class="warn">skills 没立即触发</span></td>
+                <td>Claude Code / Codex 可能还没重新扫描 skills。</td>
+                <td>重开会话，再用“开始前准备”“先归因”“验证闭环”等触发词。</td>
+              </tr>
+              <tr>
+                <td><span class="ok">同一个 repo 是否要重复装</span></td>
+                <td>不需要。</td>
+                <td>同一业务 repo 日常直接调用；只有工作流更新或文件损坏时才重跑。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="talk-track">
+      <div class="shell">
+        <div class="section-head"><span class="tag">07</span><h2>给同事介绍时可以这样说</h2></div>
+        <div class="grid two">
+          <div class="card">
+            <h3>一句话</h3>
+            <p>这不是让你切到另一个 repo 开发，而是把一套 AI 编程纪律注入到你的业务 repo：先问清楚、先归因、查外部真相、走唯一取值路径、拿证据再说完成。</p>
+          </div>
+          <div class="card">
+            <h3>三句话</h3>
+            <ol>
+              <li>第一次装一个 Claude Code 命令入口。</li>
+              <li>每个新业务 repo 输入一次 <code>/four-stage-install</code>。</li>
+              <li>之后所有 coding 都在业务 repo 里，用自然语言触发四阶段。</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <span>四阶段使用说明 · 静态 HTML，可直接本地打开。介绍方法论请看 <code>四阶段工作流.html</code>。</span>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".copy").forEach(function(button) {
+      button.addEventListener("click", function() {
+        var target = document.querySelector(button.getAttribute("data-copy"));
+        if (!target) return;
+        navigator.clipboard.writeText(target.textContent.trim()).then(function() {
+          var old = button.textContent;
+          button.textContent = "已复制";
+          setTimeout(function() { button.textContent = old; }, 1200);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

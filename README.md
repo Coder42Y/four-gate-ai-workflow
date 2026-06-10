@@ -28,8 +28,9 @@
 | `安装.sh` | 一键软链两个 Skill（幂等/可卸载） | `bash 安装.sh`（旧版，推荐用 `deploy.sh`） |
 | `deploy.sh` | **一键部署**：全局 Skills + 项目级模板 + CLAUDE.md 注入 | `bash deploy.sh /path/to/project` |
 | `四阶段工作流.html` | 静态说明页，用于讲解方法论 | 浏览器直接打开 |
+| `四阶段使用说明.html` | 静态使用说明页：安装、调用、排错 | 给同事照着操作 |
 
-> 配套读 `../AI全栈开发工作流指南.md`（**描述性**：AI 实际做了什么、数千次调用分布）。本套是**规范性**：该强制什么。
+> 配套读 `../AI全栈开发工作流指南.md`（**描述性**：AI 实际做了什么、多轮工具调用怎么分布）。本套是**规范性**：该强制什么。
 
 ## 推荐入口：Claude Code `/four-stage-install`
 
@@ -92,7 +93,7 @@ bash deploy.sh --uninstall /path/to/your/project
 
 部署后需手动完成：编辑 `ai-workflow/环境真相档案.md` 中的 `[待填]` 项。
 
-`四阶段工作流.html` 只是静态说明页，适合打开给团队讲这套方法。真正的落地入口是 Claude Code `/four-stage-install`，或命令行 `bootstrap.sh` / `deploy.sh`；项目内落地资产是生成到业务 repo 的 `ai-workflow/` 文档。
+`四阶段工作流.html` 是方法论介绍页，适合打开给团队讲这套方法；`四阶段使用说明.html` 是操作说明页，适合同事第一次照着安装和调用。真正的落地入口是 Claude Code `/four-stage-install`，或命令行 `bootstrap.sh` / `deploy.sh`；项目内落地资产是生成到业务 repo 的 `ai-workflow/` 文档。
 
 > 旧版 `安装.sh` 仍可用（仅做全局 skill 软链），建议迁移到 `deploy.sh`。
 
