@@ -31,6 +31,20 @@
 
 ## 一键部署
 
+给同事的推荐一行命令：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash -s -- --with-review-addon /path/to/your/project
+```
+
+如果已经在目标项目根目录，可直接运行：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash
+```
+
+这会把工作流仓库缓存到 `~/.four-stage-ai-workflow`，之后自动调用 `deploy.sh`。重复执行会先更新缓存仓库，再重新部署。
+
 ```bash
 # 仅全局安装（软链 Skills 到 ~/.claude/skills/ 和 ~/.codex/skills/）
 bash deploy.sh

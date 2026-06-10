@@ -829,7 +829,8 @@ main() {
 
   # 规范化项目路径
   if [ -n "$project_path" ]; then
-    project_path="$(cd "$project_path" 2>/dev/null && pwd)" || die "路径无效: $project_path"
+    requested_path="$project_path"
+    project_path="$(cd "$requested_path" 2>/dev/null && pwd)" || die "路径无效: $requested_path"
   fi
 
   separator
@@ -869,12 +870,12 @@ main() {
         generate_value_map_guide "$project_path"
         inject_claude_md "$project_path"
         if [ "$install_review_addon" = true ]; then
-          do_review_addon_install
+          do_review_addon_install || warn "跳过 code-self-review 增补；主部署已完成"
         fi
         print_summary "$project_path"
       else
         if [ "$install_review_addon" = true ]; then
-          do_review_addon_install
+          do_review_addon_install || warn "跳过 code-self-review 增补；全局 Skills 已安装"
         fi
         # 仅全局安装，打印简要提示
         printf '\n  ✓ 全局 Skills 安装完成。\n'
