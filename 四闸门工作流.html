@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四闸门 AI 开发工作流 · 工程蓝图</title>
+<script>document.documentElement.className += ' js';</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f1e8;
+    --paper-2:#efeada;
+    --panel:#ffffff;
+    --panel-2:#fbf9f3;
+    --line:#ded7c6;
+    --line-soft:#e7e1d2;
+    --ink:#1c2230;
+    --ink-dim:#565d6e;
+    --ink-faint:#8a8472;
+    --teal:#0e8a7c;
+    --amber:#bd7a10;
+    --coral:#d6463a;
+    --green:#1a9b54;
+    --g0:var(--amber);
+    --g1:var(--teal);
+    --g2:var(--coral);
+    --g3:var(--green);
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+    --sans:'Noto Sans SC',-apple-system,sans-serif;
+    --shadow:0 1px 0 rgba(28,34,48,.02),0 14px 34px -22px rgba(28,34,48,.28);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:400;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* blueprint grid + faint grain on paper */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(ellipse 120% 92% at 50% 0%,#000 28%,transparent 80%);
+    mask-image:radial-gradient(ellipse 120% 92% at 50% 0%,#000 28%,transparent 80%);
+    opacity:.7;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:2;max-width:1140px;margin:0 auto;padding:0 28px}
+
+  .tag{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint)}
+
+  /* top bar */
+  .topbar{
+    position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;
+    padding:20px 28px;max-width:1140px;margin:0 auto;
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;color:var(--ink-faint);
+  }
+  .topbar b{color:var(--ink);font-weight:600}
+
+  /* HERO */
+  .hero{padding:84px 0 66px;position:relative}
+  .hero .sheet{
+    font-family:var(--mono);font-size:11px;letter-spacing:.3em;color:var(--ink-faint);
+    text-transform:uppercase;margin-bottom:34px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;
+  }
+  .hero .sheet span{position:relative;padding-left:16px}
+  .hero .sheet span::before{content:"";position:absolute;left:0;top:50%;width:6px;height:6px;transform:translateY(-50%) rotate(45deg);background:var(--teal)}
+  .hero h1{
+    font-family:var(--mono);font-weight:700;
+    font-size:clamp(38px,7.5vw,86px);line-height:.目标环境;letter-spacing:-.02em;color:var(--ink);margin-bottom:8px;
+  }
+  .hero h1 .four{color:var(--amber)}
+  .hero h1 .en{
+    display:block;font-family:var(--mono);font-weight:500;
+    font-size:clamp(13px,1.6vw,17px);letter-spacing:.4em;color:var(--ink-faint);margin-top:26px;text-transform:uppercase;
+  }
+  .creed{
+    margin-top:46px;max-width:680px;border-left:3px solid var(--amber);
+    padding:6px 0 6px 26px;font-size:clamp(18px,2.4vw,25px);font-weight:400;line-height:1.55;color:var(--ink);
+  }
+  .creed b{font-weight:700;color:var(--amber)}
+  .hero .meta{margin-top:48px;display:flex;gap:30px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--ink-dim)}
+  .hero .meta i{font-style:normal;color:var(--ink);font-weight:600}
+
+  /* reveal: only hide when JS active; hero stays via fill-mode both */
+  .rise{}
+  .js .rise{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+  .js .rise.in{opacity:1;transform:none}
+  .js .hero .rise{opacity:1;transform:none;animation:heroRise 1s cubic-bezier(.16,1,.3,1) both}
+  .hero .d1{animation-delay:.05s}.hero .d2{animation-delay:.18s}.hero .d3{animation-delay:.34s}.hero .d4{animation-delay:.5s}
+  @keyframes heroRise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+
+  /* section frame */
+  section{padding:74px 0;position:relative}
+  .sechead{display:flex;align-items:baseline;gap:18px;margin-bottom:14px}
+  .sechead .no{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--teal);letter-spacing:.1em}
+  .sechead h2{font-family:var(--mono);font-weight:600;font-size:clamp(22px,3.2vw,34px);letter-spacing:-.01em;color:var(--ink)}
+  .seclead{max-width:720px;color:var(--ink-dim);font-size:15.5px;margin-bottom:44px}
+  .seclead b{color:var(--ink);font-weight:600}
+  .rule{height:1px;background:linear-gradient(90deg,var(--line),transparent);margin:0 0 40px}
+
+  /* problem trio */
+  .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .trap{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:26px 24px 28px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+  .trap::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--coral)}
+  .trap .ix{font-family:var(--mono);font-size:11px;color:var(--coral);letter-spacing:.2em;font-weight:600}
+  .trap h3{font-size:17px;font-weight:700;margin:14px 0 10px;color:var(--ink);line-height:1.35}
+  .trap p{font-size:13.5px;color:var(--ink-dim);line-height:1.7}
+  .trap .ev{margin-top:16px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:12px;line-height:1.6}
+  .trap .ev b{color:var(--coral);font-weight:700}
+
+  /* PIPELINE */
+  .pipe-wrap{position:relative;margin:10px 0 8px}
+  .pipe-rail{position:absolute;left:0;right:0;top:42px;height:3px;z-index:0;background:linear-gradient(90deg,var(--g0),var(--g1),var(--g2),var(--g3));opacity:.5;border-radius:3px}
+  .pipe-rail .flow{position:absolute;top:-1px;height:5px;width:90px;border-radius:5px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);opacity:.7;animation:flow 4.2s linear infinite}
+  @keyframes flow{from{left:-10%}to{left:104%}}
+  .gates{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:1}
+  .gate{
+    --c:var(--teal);
+    background:var(--panel);border:1px solid var(--line);border-top:none;border-radius:5px;
+    padding:0 0 24px;position:relative;overflow:hidden;box-shadow:var(--shadow);
+    transition:transform .4s cubic-bezier(.16,1,.3,1),border-color .4s,box-shadow .4s;
+  }
+  .gate .cap{height:84px;display:flex;align-items:center;justify-content:center;position:relative;border-top:3px solid var(--c);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 12%,var(--panel)),var(--panel))}
+  .gate .num{font-family:var(--mono);font-weight:700;font-size:52px;line-height:1;color:var(--c)}
+  .gate .node{position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(45deg);width:13px;height:13px;background:var(--panel);border:3px solid var(--c)}
+  .gate .body{padding:0 20px}
+  .gate .gname{font-size:18px;font-weight:700;color:var(--ink);margin:4px 0 3px}
+  .gate .gsub{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--c);margin-bottom:14px;font-weight:600}
+  .gate .grule{font-size:13px;color:var(--ink-dim);line-height:1.65;min-height:78px}
+  .gate .grule b{color:var(--ink);font-weight:600}
+  .gate .gev{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--ink-faint);border-top:1px dashed var(--line);padding-top:11px;line-height:1.6}
+  .gate .gev b{color:var(--c);font-weight:700}
+  .gate:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 22px 44px -24px color-mix(in srgb,var(--c) 55%,transparent)}
+  .gate.g0{--c:var(--g0)}.gate.g1{--c:var(--g1)}.gate.g2{--c:var(--g2)}.gate.g3{--c:var(--g3)}
+  .pipe-foot{margin-top:24px;font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);display:flex;align-items:center;gap:12px;letter-spacing:.04em}
+  .pipe-foot .ar{color:var(--green);font-size:15px}
+
+  /* matrix table */
+  .matrix{border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--panel);box-shadow:var(--shadow)}
+  .matrix .mrow{display:grid;grid-template-columns:150px 1fr 1fr;gap:0;border-bottom:1px solid var(--line)}
+  .matrix .mrow:last-child{border-bottom:none}
+  .matrix .mrow.head{background:var(--panel-2)}
+  .matrix .mrow.head div{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .matrix .mc{padding:15px 18px;font-size:13px;border-right:1px solid var(--line);line-height:1.6;color:var(--ink-dim)}
+  .matrix .mc:last-child{border-right:none}
+  .matrix .mc.k{font-family:var(--mono);font-weight:700;color:var(--green);font-size:12.5px;display:flex;align-items:center;gap:8px}
+  .matrix .mc.k .sq{width:7px;height:7px;background:var(--green);transform:rotate(45deg);flex:none}
+  .matrix .mc .cmd{font-family:var(--mono);font-size:11.5px;color:var(--teal);background:color-mix(in srgb,var(--teal) 9%,var(--panel));padding:2px 6px;border-radius:3px;border:1px solid color-mix(in srgb,var(--teal) 28%,var(--line))}
+  .matrix .mc b{color:var(--ink);font-weight:600}
+  .matrix .mrow:hover{background:var(--panel-2)}
+  .ironlaw{margin-top:26px;border:1px solid color-mix(in srgb,var(--green) 45%,var(--line));border-radius:5px;background:linear-gradient(120deg,color-mix(in srgb,var(--green) 8%,var(--panel)),var(--panel));padding:22px 26px;display:flex;gap:18px;align-items:flex-start;box-shadow:var(--shadow)}
+  .ironlaw .ic{font-family:var(--mono);font-weight:700;color:var(--green);font-size:13px;letter-spacing:.08em;white-space:nowrap;padding-top:2px}
+  .ironlaw p{font-size:15px;color:var(--ink);line-height:1.6}
+  .ironlaw b{color:var(--green);font-weight:700}
+
+  /* value map */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+  .vbox{border:1px solid var(--line);border-radius:5px;padding:24px;background:var(--panel);box-shadow:var(--shadow)}
+  .vbox.wrong{border-color:color-mix(in srgb,var(--coral) 45%,var(--line))}
+  .vbox.right{border-color:color-mix(in srgb,var(--green) 45%,var(--line))}
+  .vbox .vh{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:9px}
+  .vbox.wrong .vh{color:var(--coral)}.vbox.right .vh{color:var(--green)}
+  .vbox .vh .b{width:8px;height:8px;transform:rotate(45deg)}
+  .vbox.wrong .vh .b{background:var(--coral)}.vbox.right .vh .b{background:var(--green)}
+  pre.code{font-family:var(--mono);font-size:12px;line-height:1.85;color:var(--ink-dim);overflow-x:auto;white-space:pre-wrap;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:14px 16px}
+  pre.code .cm{color:var(--ink-faint)}
+  pre.code .bad{color:var(--coral);font-weight:600}
+  pre.code .ok{color:var(--green);font-weight:600}
+  pre.code .fn{color:var(--teal);font-weight:600}
+  .vnote{margin-top:18px;font-size:13px;color:var(--ink-dim);line-height:1.65}
+  .vnote b{color:var(--ink);font-weight:600}
+
+  /* loop */
+  .loop{display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:center}
+  .loopviz{position:relative;aspeexample-ratio:1/.82;display:flex;align-items:center;justify-content:center}
+  .loop-svg{width:100%;height:100%}
+  .loop .lt h3{font-family:var(--mono);font-size:20px;color:var(--ink);margin-bottom:16px;font-weight:600}
+  .loop .lt ol{list-style:none;counter-reset:l}
+  .loop .lt li{counter-increment:l;position:relative;padding:13px 0 13px 44px;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-dim);line-height:1.6}
+  .loop .lt li::before{content:counter(l,decimal-leading-zero);position:absolute;left:0;top:13px;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);border:1px solid var(--line);width:28px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:3px;background:var(--panel)}
+  .loop .lt li b{color:var(--ink);font-weight:700}
+
+  /* rollout */
+  .days{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .day{border:1px solid var(--line);border-radius:5px;padding:22px;background:var(--panel);position:relative;box-shadow:var(--shadow)}
+  .day .dh{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--amber);font-weight:700;text-transform:uppercase}
+  .day h4{font-size:15px;font-weight:700;margin:12px 0 8px;color:var(--ink)}
+  .day p{font-size:12.5px;color:var(--ink-dim);line-height:1.6}
+  .day .cmd{font-family:var(--mono);font-size:11px;color:var(--teal);display:block;margin-top:12px;background:var(--panel-2);padding:7px 9px;border-radius:3px;border:1px solid var(--line)}
+
+  /* close */
+  .close{text-align:center;padding:90px 0 30px}
+  .close .big{font-family:var(--sans);font-weight:400;font-size:clamp(22px,3.6vw,38px);line-height:1.45;max-width:880px;margin:0 auto;color:var(--ink)}
+  .close .big b{font-weight:700;color:var(--amber)}
+  .close .sig{margin-top:40px;font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase}
+  footer{border-top:1px solid var(--line);padding:30px 0 60px;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-faint)}
+  footer b{color:var(--ink-dim)}
+
+  @media(max-width:880px){
+    .trio,.gates,.days{grid-template-columns:1fr 1fr}
+    .twocol,.loop{grid-template-columns:1fr}
+    .pipe-rail{display:none}
+    .gate .grule{min-height:0}
+    .loopviz{max-width:340px;margin:0 auto}
+  }
+  @media(max-width:560px){
+    .trio,.gates,.days{grid-template-columns:1fr}
+    .matrix .mrow{grid-template-columns:1fr}
+    .matrix .mc{border-right:none;border-bottom:1px solid var(--line)}
+    .matrix .mrow.head{display:none}
+    .hero{padding:56px 0 46px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .js .rise{opacity:1;transform:none;transition:none}
+    .js .hero .rise{animation:none}
+    .pipe-rail .flow{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span>团队方法论 · 实战提炼 <b>/ 同栈可推广</b></span>
+  <span>DOC. <b>四闸门 v1</b> · 2026</span>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="sheet rise d1">
+      <span>流程引擎</span><span>配置中心</span><span>权限系统</span><span>远端 CI 编译</span><span>手工运维</span>
+    </div>
+    <h1 class="rise d2"><span class="four">四闸门</span><br>AI 开发工作流<span class="en">FOUR-GATE WORKFLOW FOR EXTERNAL-DEPENDENT SYSTEMS</span></h1>
+    <p class="creed rise d3">让“对的做法”成为<b>阻力最小的路径</b>。机器能判定的硬卡，要判断的用 Skill 把“遵守”做得比“不遵守”还省事——绝不靠一份没人看的规范。</p>
+    <div class="meta rise d4">
+      <span>来源 / <i>真实开发会话</i></span>
+      <span>区间 / <i>一个月实战</i></span>
+      <span>样本 / <i>多次会话 · 数千 工具调用</i></span>
+      <span>沉淀 / <i>多条踩坑记忆</i></span>
+    </div>
+  </div>
+</header>
+
+<!-- WHY -->
+<section>
+  <div class="wrap">
+    <div class="sechead rise"><span class="no">01</span><h2>为什么是这一类项目</h2></div>
+    <p class="seclead rise">普通项目代码在本机跑，写对了基本就对了。<b>这一类</b>的三个结构性特征，让“代码看着对”和“线上真的对”之间裂开一条鸿沟——AI（和人）最贵的三个错误由此而来。</p>
+    <div class="rule rise"></div>
+    <div class="trio">
+      <div class="trap rise">
+        <div class="ix">TRAP_01</div>
+        <h3>真相不在代码里</h3>
+        <p>配置中心、字典码值、组织维度、有没有数据库迁移框架——AI 读穿代码也推不出来，只能被告知或去现场探。</p>
+        <div class="ev"><b>实证 ›</b> 扁平查字典把“类别 A”显示成另一个类目；无迁移框架时加列即崩。</div>
+      </div>
+      <div class="trap rise">
+        <div class="ix">TRAP_02</div>
+        <h3>改完 ≠ 生效</h3>
+        <p>代码不在本机跑，靠远端 CI 编译 + 手工运维部署。旧码 / 旧 jar / 旧缓存可藏在任意一环。</p>
+        <div class="ev"><b>实证 ›</b> 本地不 push→CI 编的全是旧码；部署 SUCCESS 但 jar 是旧的。</div>
+      </div>
+      <div class="trap rise">
+        <div class="ix">TRAP_03</div>
+        <h3>行为由配置决定</h3>
+        <p>流程引擎 / 配置中心 / 权限系统——很多“bug”根本不是代码问题，写代码去修反而引入新 bug。</p>
+        <div class="ev"><b>实证 ›</b> 审批按钮占位符＝编辑器没配；引擎不发回调＝运维停摆。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE -->
+<section>
+  <div class="wrap">
+    <div class="sechead rise"><span class="no">02</span><h2>脊柱 · 四道闸门</h2></div>
+    <p class="seclead rise">一次任务的生命周期，按 <b>0 → 1 → 2 → 3</b> 顺序过闸，不跳步。每道闸堵一类最贵的错误。</p>
+    <div class="pipe-wrap">
+      <div class="pipe-rail"><span class="flow"></span></div>
+      <div class="gates">
+        <div class="gate g0 rise">
+          <div class="cap"><span class="node"></span><span class="num">0</span></div>
+          <div class="body">
+            <div class="gname">归因</div>
+            <div class="gsub">Attribute</div>
+            <div class="grule">动码前先钉到 <b>代码 / 配置 / 运维 / 数据</b> 某一层并给证据。<b>不是“代码”层就不许写代码。</b></div>
+            <div class="gev"><b>治 ›</b> 为非代码问题写代码（最贵的浪费）</div>
+          </div>
+        </div>
+        <div class="gate g1 rise">
+          <div class="cap"><span class="node"></span><span class="num">1</span></div>
+          <div class="body">
+            <div class="gname">外部真相</div>
+            <div class="gsub">Ground Truth</div>
+            <div class="grule"><b>结构性真相入档案</b>（随仓库走），<b>运行时状态现场探针</b>。绝不把易变状态写死进文档。</div>
+            <div class="gev"><b>治 ›</b> 不知真相就动手、取错值</div>
+          </div>
+        </div>
+        <div class="gate g2 rise">
+          <div class="cap"><span class="node"></span><span class="num">2</span></div>
+          <div class="body">
+            <div class="gname">取值地图</div>
+            <div class="gsub">Resolution Map</div>
+            <div class="grule">每个外部值钉到<b>唯一正路</b>。不写死 ID <b>≠</b> 只是别写裸数字——走真 API 也会取错值。</div>
+            <div class="gev"><b>治 ›</b> 走对路的 API 仍串值 / 静默变空</div>
+          </div>
+        </div>
+        <div class="gate g3 rise">
+          <div class="cap"><span class="node"></span><span class="num">3</span></div>
+          <div class="body">
+            <div class="gname">验证闭环</div>
+            <div class="gsub">Verify · 第一枪</div>
+            <div class="grule">按改动类型取<b>线上实证</b>。无实证，不许说“修好了”。Evidence before assertions.</div>
+            <div class="gev"><b>治 ›</b> 假成功上线</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pipe-foot rise"><span class="ar">↺</span> 回灌：闸门 0/3 抓到新真相，当场写回档案——AI 抄写、人审、合并。档案是活体，不是死文档。</div>
+  </div>
+</section>
+
+<!-- VALUE MAP -->
+<section>
+  <div class="wrap">
+    <div class="sechead rise"><span class="no">03</span><h2>闸门 2 · 不写死 ID 的真正含义</h2></div>
+    <p class="seclead rise">挑战一个直觉误区：很多人以为“不写死 ID”＝别写裸数字、改成查字典。<b>这个理解不够，甚至有害。</b>真正的杀手不是“写了字面量”，而是“取值走了一条看似合理、实则错误的路”。</p>
+    <div class="twocol">
+      <div class="vbox wrong rise">
+        <div class="vh"><span class="b"></span>歧路 · 走了真 API 却取错值</div>
+<pre class="code"><span class="cm">// ❌ 扁平查多级字典树 → 数字 value 跨字典复用</span>
+String name = <span class="bad">codeUtils.getNameByParentType</span>(
+    parentType, value);
+<span class="cm">// 多级树 + value 复用 → 实测显示成另一个类目</span>
+
+<span class="cm">// ❌ 查通用字典取状态名</span>
+String s = <span class="bad">codeUtils.getCodeName</span>("biz_status", code);
+<span class="cm">// 码值对不上 → 静默变空</span></pre>
+      </div>
+      <div class="vbox right rise">
+        <div class="vh"><span class="b"></span>正路 · 钉到唯一正路</div>
+<pre class="code"><span class="cm">// ✅ 按层级查（专用 Resolver）</span>
+String name = typeNameResolver
+    .<span class="fn">resolve</span>(parent, child);
+<span class="cm">// 走层级，不串值</span>
+
+<span class="cm">// ✅ 用枚举，不查字典</span>
+String s = <span class="fn">BizStatusEnum.getName</span>(code);
+<span class="cm">// 码值自洽，不会静默变空</span></pre>
+      </div>
+    </div>
+    <p class="vnote rise"><b>机制 ›</b> grep 魔法数字的 lint 根本抓不到这两个坑——它们走的是真·API。所以闸门 2 的中心是一份 <b>「取值地图」</b>：每个外部概念钉到唯一正路，表里没有的<b>停下问人，绝不自创查法</b>；review 查的是“有没有绕开正路”，而非“有没有裸数字”。</p>
+  </div>
+</section>
+
+<!-- MATRIX -->
+<section>
+  <div class="wrap">
+    <div class="sechead rise"><span class="no">04</span><h2>闸门 3 · 改动类型 → 必需实证</h2></div>
+    <p class="seclead rise">该验证哪几环，<b>取决于你改了什么</b>。这是密度最高的痛点，也是落地第一枪。</p>
+    <div class="matrix rise">
+      <div class="mrow head"><div class="mc">改动类型</div><div class="mc">必需实证</div><div class="mc">不做的后果</div></div>
+      <div class="mrow">
+        <div class="mc k"><span class="sq"></span>后端</div>
+        <div class="mc"><span class="cmd">git ls-remote origin</span> == 本地 HEAD <b>+</b> 版本探针验 jar 新旧</div>
+        <div class="mc">没 push→CI 拉旧码，部署 SUCCESS 全是旧逻辑</div>
+      </div>
+      <div class="mrow">
+        <div class="mc k"><span class="sq"></span>前端</div>
+        <div class="mc"><b>清缓存重登后</b>线上调接口验证</div>
+        <div class="mc">浏览器缓存旧 bundle，“看不到改动”（已坑两次）</div>
+      </div>
+      <div class="mrow">
+        <div class="mc k"><span class="sq"></span>DB 列</div>
+        <div class="mc"><span class="cmd">information_schema</span> 实查列存在 <b>·</b> 先手工 ALTER</div>
+        <div class="mc">无迁移框架，引用不存在的列部署即崩</div>
+      </div>
+      <div class="mrow">
+        <div class="mc k"><span class="sq"></span>流程引擎</div>
+        <div class="mc">手动 POST 回调 → 状态翻转 <b>+</b> 编辑器 i18n / 变量已配</div>
+        <div class="mc">以为链路通、其实引擎没发；按钮显示占位符</div>
+      </div>
+    </div>
+    <div class="ironlaw rise">
+      <div class="ic">铁律 / IRON LAW</div>
+      <p>“修好了 / 部署成功 / 应该没问题 / 已完成”这类话，没有引用对应实证，<b>一律不许说出口</b>。拿不准时默认“未验证”，把缺的实证列出来——绝不用“应该 / 理论上”补位。</p>
+    </div>
+  </div>
+</section>
+
+<!-- LOOP -->
+<section>
+  <div class="wrap">
+    <div class="sechead rise"><span class="no">05</span><h2>活体机制 · 防腐烂</h2></div>
+    <p class="seclead rise">档案一旦冻结在第一天就开始过期。必须有机制把“刚踩的坑”自动变成“档案里的永久条目”。</p>
+    <div class="loop">
+      <div class="loopviz rise">
+        <svg class="loop-svg" viewBox="0 0 320 270" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0e8a7c"/><stop offset="1" stop-color="#1a9b54"/></linearGradient>
+          </defs>
+          <circle cx="160" cy="135" r="104" stroke="#ded7c6" stroke-width="1.5" stroke-dasharray="3 5"/>
+          <circle cx="160" cy="135" r="104" stroke="url(#lg)" stroke-width="2.5" stroke-dasharray="120 533" stroke-linecap="round"/>
+          <circle cx="160" cy="31" r="7" fill="#fff" stroke="#d6463a" stroke-width="2.5"/>
+          <circle cx="264" cy="135" r="7" fill="#fff" stroke="#bd7a10" stroke-width="2.5"/>
+          <circle cx="160" cy="239" r="7" fill="#fff" stroke="#0e8a7c" stroke-width="2.5"/>
+          <circle cx="56" cy="135" r="7" fill="#fff" stroke="#1a9b54" stroke-width="2.5"/>
+          <text x="160" y="20" text-anchor="middle" fill="#565d6e" font-family="IBM Plex Mono" font-size="10">踩坑</text>
+          <text x="297" y="139" text-anchor="middle" fill="#565d6e" font-family="IBM Plex Mono" font-size="10">AI 起草</text>
+          <text x="160" y="258" text-anchor="middle" fill="#565d6e" font-family="IBM Plex Mono" font-size="10">人审</text>
+          <text x="24" y="139" text-anchor="middle" fill="#565d6e" font-family="IBM Plex Mono" font-size="10">入档</text>
+          <text x="160" y="131" text-anchor="middle" fill="#1c2230" font-family="IBM Plex Mono" font-size="12" font-weight="600">环境真相</text>
+          <text x="160" y="149" text-anchor="middle" fill="#0e8a7c" font-family="IBM Plex Mono" font-size="11">档案 · 活体</text>
+        </svg>
+      </div>
+      <div class="lt rise">
+        <h3>踩坑即回灌</h3>
+        <ol>
+          <li><b>谁发现谁回灌 ›</b> 闸门 3 抓到假成功、或闸门 0 查出非代码真因，当场写回对应资产。</li>
+          <li><b>AI 当抄写员 ›</b> 任务收尾，AI 主动产出“本次新学到的外部真相”草稿——它刚踩完坑，最便宜的记录者。</li>
+          <li><b>人审是闸门 ›</b> 出口从“个人机 memory”改成“项目 PR”，人审一下再合并，防写错 / 写冗余。</li>
+          <li><b>review 卡点 ›</b> reviewer 必问“这次学到新外部真相了吗？入档了吗？”——没回灌的 PR 不算完。</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLLOUT -->
+<section>
+  <div class="wrap">
+    <div class="sechead rise"><span class="no">06</span><h2>三天起步 · 拿第一个胜仗</h2></div>
+    <p class="seclead rise">冷启动最忌一上来铺一大套。按 ROI 可证性排，<b>第一枪打验证闭环</b>——一旦拦下一次“本要当作修好上线的假成功”，就是周会能讲的硬故事。</p>
+    <div class="days">
+      <div class="day rise">
+        <div class="dh">Day · 00</div>
+        <h4>装第一枪</h4>
+        <p>软链两个 Skill，与现有 review skill 同机制。</p>
+        <code class="cmd">bash 安装.sh</code>
+      </div>
+      <div class="day rise">
+        <div class="dh">Day · 01</div>
+        <h4>启用验证闭环</h4>
+        <p>立铁律“没实证不说修好了”，立刻开始拦假成功。</p>
+        <code class="cmd">skill › verify-closure</code>
+      </div>
+      <div class="day rise">
+        <div class="dh">Day · 02</div>
+        <h4>立底座</h4>
+        <p>环境真相档案进项目根，AI 每会话先读。</p>
+        <code class="cmd">环境真相档案.md → 项目根</code>
+      </div>
+      <div class="day rise">
+        <div class="dh">Day · 03</div>
+        <h4>补归因 + 取值地图</h4>
+        <p>归因 Skill 上线；取值检查并进 review skill。</p>
+        <code class="cmd">skill › attribute-rootcause</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<div class="close wrap">
+  <p class="big rise">把 AI 从“自信的代码生成器”，变成<br><b>先归因、先核对真相、走唯一正路、拿实证才收口、踩坑即沉淀</b><br>的资深协作者。</p>
+  <div class="sig rise">这套纪律来自一个月的真实血泪 · 不是纸上谈兵</div>
+</div>
+
+<footer>
+  <div class="wrap">真正新建的 Skill 只有 <b>2 个</b>（验证 · 归因）— 取值地图复用现有 review skill，真相档案是文档，回灌是习惯。<b>刻意不臃肿。</b></div>
+</footer>
+
+<script>
+  (function(){
+    var items = document.querySelectorAll('section .rise, .close .rise');
+    function reveal(el){ el.classList.add('in'); }
+    if(!('IntersectionObserver' in window)){
+      items.forEach(reveal);
+      return;
+    }
+    var io = new IntersectionObserver(function(entries, obs){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var sibs = Array.prototype.slice.call(e.target.parentElement.querySelectorAll(':scope > .rise'));
+          var i = sibs.indexOf(e.target);
+          e.target.style.transitionDelay = (Math.max(0, i) * 70) + 'ms';
+          reveal(e.target);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+    items.forEach(function(el){ io.observe(el); });
+    // failsafe: never leave anything stuck hidden
+    setTimeout(function(){ items.forEach(reveal); }, 2600);
+  })();
+</script>
+</body>
+</html>
