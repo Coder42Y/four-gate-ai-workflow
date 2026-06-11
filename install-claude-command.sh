@@ -78,9 +78,9 @@ cat <<NEXT
     /four-stage-install
 
   它会在当前业务 repo 执行四阶段工作流部署：
-  - 全局安装/更新 Claude + Codex workflow skills
+  - 全局安装/更新 Codex + Claude workflow skills
   - 生成 ai-workflow/
-  - 注入 CLAUDE.md
+  - 注入 AGENTS.md / CLAUDE.md
   - 尝试安装 code-self-review 取值地图增补
 
 NEXT

@@ -448,9 +448,9 @@ String s = <span class="fn">BizStatusEnum.getName</span>(code);
     <div class="days">
       <div class="day rise">
         <div class="dh">Day · 00</div>
-        <h4>装命令入口</h4>
-        <p>Claude Code 先全局装一次命令入口；之后每个业务 repo 用 slash command 接入。</p>
-        <code class="cmd">/four-stage-install</code>
+        <h4>接入业务 repo</h4>
+        <p>在业务 repo 根目录执行 bootstrap，生成 ai-workflow、AGENTS.md 和全局 workflow skills。</p>
+        <code class="cmd">bash /tmp/four-stage-bootstrap.sh</code>
       </div>
       <div class="day rise">
         <div class="dh">Day · 01</div>

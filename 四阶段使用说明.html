@@ -383,19 +383,19 @@
     </div>
     <div class="hero-panel">
       <h2>最短路径</h2>
-      <p>第一次装命令入口，之后每个新业务 repo 用 Claude Code slash command 接入。</p>
+      <p>每个新业务 repo 直接执行 bootstrap，之后从该 repo 启动 Codex。</p>
       <div class="quick">
         <div class="quick-row">
           <div class="num">1</div>
-          <div><b>全局装一次</b><span>安装 Claude Code 命令 <code>/four-stage-install</code></span></div>
+          <div><b>进入业务 repo</b><span>在项目根目录执行远程 bootstrap</span></div>
         </div>
         <div class="quick-row">
           <div class="num">2</div>
-          <div><b>每个 repo 接入一次</b><span>在业务 repo 根目录启动 <code>claude</code>，输入 slash command</span></div>
+          <div><b>生成项目上下文</b><span>写入 <code>ai-workflow/</code> 和 <code>AGENTS.md</code></span></div>
         </div>
         <div class="quick-row">
           <div class="num">3</div>
-          <div><b>日常自然语言调用</b><span>开工准备、归因、验证闭环都在业务 repo 里完成</span></div>
+          <div><b>启动 Codex</b><span>开工准备、归因、验证闭环都在业务 repo 里完成</span></div>
         </div>
       </div>
     </div>
@@ -416,22 +416,24 @@
   <main>
     <section id="install">
       <div class="shell">
-        <div class="section-head"><span class="tag">01</span><h2>第一次：安装 Claude Code 命令入口</h2></div>
+        <div class="section-head"><span class="tag">01</span><h2>每个新业务 repo：执行 bootstrap</h2></div>
         <div class="grid two">
           <div class="card">
             <h3>给同事复制这一条</h3>
-            <p>这一步只需要做一次。它会把 <code>/four-stage-install</code> 安装到当前用户的 Claude Code 全局 skills 目录。</p>
+            <p>在业务项目根目录执行。它会拉取工作流仓库，安装 Codex skills，并把四阶段纪律写入当前项目。</p>
             <div class="command">
               <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-install">复制</button></div>
-              <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh -o /tmp/four-stage-install-claude-command.sh
-bash /tmp/four-stage-install-claude-command.sh</pre>
+              <pre id="cmd-install">cd /path/to/business-repo
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
+bash /tmp/four-stage-bootstrap.sh</pre>
             </div>
           </div>
           <div class="card">
             <h3>它装了什么</h3>
             <ul>
               <li><code>~/.four-stage-ai-workflow</code>：缓存本工作流仓库。</li>
-              <li><code>~/.claude/skills/four-stage-install</code>：Claude Code slash command 入口。</li>
+              <li><code>~/.agents/skills</code>：Codex 可发现的三个 workflow skills。</li>
+              <li><code>AGENTS.md</code>：Codex 启动时读取的项目级四阶段纪律。</li>
               <li>安装完后，业务开发仍然在业务 repo 里做，不需要切到本仓库。</li>
             </ul>
           </div>
@@ -444,29 +446,30 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
         <div class="section-head"><span class="tag">02</span><h2>每个新业务 repo：接入一次工作流</h2></div>
         <div class="grid two">
           <div class="card">
-            <h3>进入业务 repo</h3>
+            <h3>启动 Codex</h3>
             <p>注意是业务项目根目录，不是四阶段工作流仓库。</p>
             <div class="command">
               <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-repo">复制</button></div>
               <pre id="cmd-repo">cd /path/to/business-repo
-claude</pre>
+codex</pre>
             </div>
           </div>
           <div class="card">
-            <h3>在 Claude Code 输入</h3>
-            <p>这个 slash command 会在当前业务 repo 执行本地缓存的 bootstrap。</p>
+            <h3>Claude Code 兼容入口</h3>
+            <p>如果团队里有人继续用 Claude Code，可以单独安装 slash command。</p>
             <div class="command">
-              <div class="command-head"><span>claude code</span><button class="copy" data-copy="#cmd-slash">复制</button></div>
-              <pre id="cmd-slash">/four-stage-install</pre>
+              <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-slash">复制</button></div>
+              <pre id="cmd-slash">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh -o /tmp/four-stage-install-claude-command.sh
+bash /tmp/four-stage-install-claude-command.sh</pre>
             </div>
           </div>
         </div>
 
         <div class="flow" aria-label="安装流程">
           <div class="flow-step"><b>更新缓存</b><span>拉取或更新 <code>~/.four-stage-ai-workflow</code></span></div>
-          <div class="flow-step"><b>安装 skills</b><span>软链到 <code>~/.claude/skills</code> 与 <code>~/.codex/skills</code></span></div>
-          <div class="flow-step"><b>注入项目</b><span>生成 <code>ai-workflow/</code>，注入 <code>CLAUDE.md</code></span></div>
-          <div class="flow-step"><b>开始使用</b><span>重开 Claude Code 会话后按四阶段处理任务</span></div>
+          <div class="flow-step"><b>安装 skills</b><span>软链到 <code>~/.agents/skills</code> 与 <code>~/.claude/skills</code></span></div>
+          <div class="flow-step"><b>注入项目</b><span>生成 <code>ai-workflow/</code>，注入 <code>AGENTS.md</code></span></div>
+          <div class="flow-step"><b>开始使用</b><span>重开 Codex 会话后按四阶段处理任务</span></div>
         </div>
       </div>
     </section>
@@ -479,7 +482,7 @@ claude</pre>
             <thead>
               <tr>
                 <th>场景</th>
-                <th>直接对 Claude / Codex 说</th>
+                <th>直接对 Codex 说</th>
                 <th>作用</th>
               </tr>
             </thead>
@@ -514,7 +517,7 @@ claude</pre>
         </div>
 
         <div class="callout" style="margin-top: 18px;">
-          <strong>使用边界：</strong>同一个业务 repo 接入后，日常 coding 不需要重复安装。换到另一个新业务 repo，第一次再输入一次 <code>/four-stage-install</code>。
+          <strong>使用边界：</strong>同一个业务 repo 接入后，日常 coding 不需要重复安装。换到另一个新业务 repo，第一次在项目根执行一次 bootstrap。
         </div>
       </div>
     </section>
@@ -524,8 +527,8 @@ claude</pre>
         <div class="section-head"><span class="tag">04</span><h2>安装后会看到哪些文件</h2></div>
         <div class="grid">
           <div class="card">
-            <h3><code>CLAUDE.md</code></h3>
-            <p>注入四阶段纪律：动码前先归因、读环境真相档案、按取值地图走、收尾必须验证。</p>
+            <h3><code>AGENTS.md</code></h3>
+            <p>Codex 启动时读取的项目级纪律：动码前先归因、读环境真相档案、按取值地图走、收尾必须验证。</p>
           </div>
           <div class="card">
             <h3><code>ai-workflow/环境真相档案.md</code></h3>
@@ -564,8 +567,8 @@ claude</pre>
             </div>
           </div>
           <div class="card">
-            <h3>命令行兜底安装</h3>
-            <p>不用 Claude Code slash command 时，直接在业务 repo 根目录运行。</p>
+            <h3>重新执行 bootstrap</h3>
+            <p>工作流更新或项目文件损坏时，在业务 repo 根目录重新运行。</p>
             <div class="command">
               <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-bootstrap">复制</button></div>
               <pre id="cmd-bootstrap">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
@@ -606,14 +609,14 @@ bash /tmp/four-stage-bootstrap.sh</pre>
             </thead>
             <tbody>
               <tr>
-                <td><span class="bad">找不到</span> <code>/four-stage-install</code></td>
-                <td>第一次命令入口没装，或 Claude Code 会话还没重启。</td>
-                <td>重跑 <code>install-claude-command.sh</code>，然后重启 Claude Code。</td>
+                <td><span class="bad">Codex 没读到四阶段纪律</span></td>
+                <td>不是从业务 repo 根目录启动，或 <code>AGENTS.md</code> 未注入。</td>
+                <td>回到业务 repo 根目录，执行 <code>~/.four-stage-ai-workflow/deploy.sh --check .</code>，然后重启 Codex。</td>
               </tr>
               <tr>
                 <td><span class="bad">误装到 workflow repo</span></td>
-                <td>启动 Claude Code 时所在目录不是业务 repo。</td>
-                <td>退出后 <code>cd</code> 到业务 repo 根目录，再输入 <code>/four-stage-install</code>。</td>
+                <td>执行 bootstrap 时所在目录不是业务 repo。</td>
+                <td>退出后 <code>cd</code> 到业务 repo 根目录，再执行 bootstrap。</td>
               </tr>
               <tr>
                 <td><span class="warn">code-self-review 增补未安装</span></td>
@@ -622,7 +625,7 @@ bash /tmp/four-stage-bootstrap.sh</pre>
               </tr>
               <tr>
                 <td><span class="warn">skills 没立即触发</span></td>
-                <td>Claude Code / Codex 可能还没重新扫描 skills。</td>
+                <td>Codex / Claude Code 可能还没重新扫描 skills。</td>
                 <td>重开会话，再用“开始前准备”“先归因”“验证闭环”等触发词。</td>
               </tr>
               <tr>
@@ -647,8 +650,8 @@ bash /tmp/four-stage-bootstrap.sh</pre>
           <div class="card">
             <h3>三句话</h3>
             <ol>
-              <li>第一次装一个 Claude Code 命令入口。</li>
-              <li>每个新业务 repo 输入一次 <code>/four-stage-install</code>。</li>
+              <li>每个新业务 repo 执行一次 bootstrap。</li>
+              <li>从业务 repo 根目录启动 <code>codex</code>。</li>
               <li>之后所有 coding 都在业务 repo 里，用自然语言触发四阶段。</li>
             </ol>
           </div>

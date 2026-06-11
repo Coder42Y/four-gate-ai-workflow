@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 四阶段 AI 开发工作流 · 一键部署
 # 用法:
-#   bash deploy.sh                                  仅全局安装（软链 Skills 到 Claude + Codex）
+#   bash deploy.sh                                  仅全局安装（软链 Skills 到 Codex + Claude）
 #   bash deploy.sh /path/to/project                 全局 + 项目级部署
 #   bash deploy.sh --with-review-addon /path        部署项目时同时安装 code-self-review 增补
 #   bash deploy.sh --install-review-addon           仅安装 code-self-review 取值地图增补
@@ -13,7 +13,8 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$HERE/skills"
 CLAUDE_SKILLS_DST="$HOME/.claude/skills"
-CODEX_SKILLS_DST="$HOME/.codex/skills"
+CODEX_SKILLS_DST="$HOME/.agents/skills"
+LEGACY_CODEX_SKILLS_DST="$HOME/.codex/skills"
 SKILL_NAMES=(ai-task-preflight verify-closure attribute-rootcause)
 REVIEW_ADDON_BEGIN="<!-- FOUR-STAGE-VALUE-MAP-ADDON-BEGIN -->"
 REVIEW_ADDON_END="<!-- FOUR-STAGE-VALUE-MAP-ADDON-END -->"
@@ -92,14 +93,17 @@ uninstall_skills_from_dir() {
 
 do_global_install() {
   printf '\n  ▶ 全局安装 Skills\n'
-  install_skills_to_dir "Claude" "$CLAUDE_SKILLS_DST"
   install_skills_to_dir "Codex" "$CODEX_SKILLS_DST"
+  install_skills_to_dir "Claude" "$CLAUDE_SKILLS_DST"
 }
 
 do_global_check() {
   printf '\n  ▶ 全局 Skills 状态\n'
-  check_skills_in_dir "Claude" "$CLAUDE_SKILLS_DST"
   check_skills_in_dir "Codex" "$CODEX_SKILLS_DST"
+  check_skills_in_dir "Claude" "$CLAUDE_SKILLS_DST"
+  if [ -d "$LEGACY_CODEX_SKILLS_DST" ]; then
+    check_skills_in_dir "Codex 旧路径" "$LEGACY_CODEX_SKILLS_DST"
+  fi
   printf '\n  源文件:\n'
   for n in "${SKILL_NAMES[@]}"; do
     [ -f "$SKILLS_SRC/$n/SKILL.md" ] && log "$SKILLS_SRC/$n/SKILL.md" || warn "缺 $SKILLS_SRC/$n/SKILL.md"
@@ -109,8 +113,11 @@ do_global_check() {
 
 do_global_uninstall() {
   printf '\n  ▶ 卸载全局 Skills\n'
-  uninstall_skills_from_dir "Claude" "$CLAUDE_SKILLS_DST"
   uninstall_skills_from_dir "Codex" "$CODEX_SKILLS_DST"
+  uninstall_skills_from_dir "Claude" "$CLAUDE_SKILLS_DST"
+  if [ -d "$LEGACY_CODEX_SKILLS_DST" ]; then
+    uninstall_skills_from_dir "Codex 旧路径" "$LEGACY_CODEX_SKILLS_DST"
+  fi
 }
 
 # ── code-self-review 增补 ─────────────────────────────────
@@ -122,9 +129,9 @@ find_review_skill_files() {
   fi
 
   local candidates=(
-    "$CLAUDE_SKILLS_DST/code-self-review/SKILL.md"
     "$CODEX_SKILLS_DST/code-self-review/SKILL.md"
-    "$HOME/.agents/skills/code-self-review/SKILL.md"
+    "$CLAUDE_SKILLS_DST/code-self-review/SKILL.md"
+    "$LEGACY_CODEX_SKILLS_DST/code-self-review/SKILL.md"
   )
 
   local f
@@ -597,19 +604,8 @@ GUIDE
   log "生成: 取值地图指南.md"
 }
 
-# 注入 CLAUDE.md 片段（带标记，幂等）
-inject_claude_md() {
-  local proj="$1"
-  local target="$proj/CLAUDE.md"
-
-  printf '\n  ▶ 注入 CLAUDE.md 片段\n'
-
-  local begin_marker="<!-- FOUR-STAGE-AI-WORKFLOW-BEGIN -->"
-  local end_marker="<!-- FOUR-STAGE-AI-WORKFLOW-END -->"
-
-  # 片段内容（来自 CLAUDE.md片段-回灌与阶段纪律.md，lines 7-39）
-  local snippet
-  snippet=$(cat <<'SNIPPET'
+project_instruction_snippet() {
+  cat <<'SNIPPET'
 <!-- 四阶段工作流 · 自动注入 · 不要手动修改此区域 -->
 <!-- 要卸载: bash deploy.sh --uninstall /path/to/project -->
 
@@ -623,7 +619,7 @@ inject_claude_md() {
 （配置中心、权限系统、流程引擎、外部服务里的很多"bug"不是代码问题，写代码修=白费+引新 bug。触发 `attribute-rootcause` skill。）
 
 ### 阶段 1 · 外部真相（先核对，再动手）
-动手前读 `ai-workflow/环境真相档案.md`（或本 CLAUDE.md 的"环境真相"段）。
+动手前读 `ai-workflow/环境真相档案.md`（或本项目说明文件中的"环境真相"段）。
 **结构性真相入档案、运行时状态现场探针**——别把"列建了没/目标环境是不是新版本"写死进文档（必过期），也别靠现探去问稳定结构。
 
 ### 阶段 2 · 取值地图（不写死 ID 的真正含义）
@@ -648,22 +644,31 @@ inject_claude_md() {
 ### 开工前准备
 需求模糊、目标不清、验收不明时，先触发 `ai-task-preflight`，形成任务简报，再进入阶段 0。
 SNIPPET
-)
+}
 
-  # 不存在 CLAUDE.md → 创建
+inject_instruction_file() {
+  local target="$1" label="$2"
+  local filename
+  filename="$(basename "$target")"
+
+  printf '\n  ▶ 注入 %s 四阶段片段\n' "$label"
+
+  local begin_marker="<!-- FOUR-STAGE-AI-WORKFLOW-BEGIN -->"
+  local end_marker="<!-- FOUR-STAGE-AI-WORKFLOW-END -->"
+  local snippet
+  snippet="$(project_instruction_snippet)"
+
   if [ ! -f "$target" ]; then
     {
       printf '%s\n' "$begin_marker"
       printf '%s\n' "$snippet"
       printf '%s\n' "$end_marker"
     } > "$target"
-    log "创建 CLAUDE.md 并注入片段"
+    log "创建 $filename 并注入片段"
     return
   fi
 
-  # CLAUDE.md 已存在，检查标记
   if grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
-    # 标记已存在 → 替换内容（支持升级）
     local tmp_file
     tmp_file="$(mktemp)"
     awk -v begin="$begin_marker" -v end="$end_marker" -v snippet="$snippet" '
@@ -677,16 +682,22 @@ SNIPPET
       }
       { print }
     ' "$target" > "$tmp_file" && mv "$tmp_file" "$target"
-    log "更新 CLAUDE.md 中的四阶段片段"
+    log "更新 $filename 中的四阶段片段"
   else
-    # 无标记 → 追加
     {
       printf '\n%s\n' "$begin_marker"
       printf '%s\n' "$snippet"
       printf '%s\n' "$end_marker"
     } >> "$target"
-    log "追加四阶段片段到 CLAUDE.md"
+    log "追加四阶段片段到 $filename"
   fi
+}
+
+# 注入项目级 agent 说明文件（带标记，幂等）
+inject_project_instructions() {
+  local proj="$1"
+  inject_instruction_file "$proj/AGENTS.md" "Codex AGENTS.md"
+  inject_instruction_file "$proj/CLAUDE.md" "Claude Code CLAUDE.md"
 }
 
 # 打印部署摘要
@@ -697,7 +708,7 @@ print_summary() {
   separator
   printf '\n  ══ 四阶段工作流 · 部署完成 ══\n\n'
 
-  printf '  ✓ 全局: Skills 已安装到 ~/.claude/skills/ 和 ~/.codex/skills/\n'
+  printf '  ✓ 全局: Skills 已安装到 ~/.agents/skills/（Codex）和 ~/.claude/skills/（Claude Code）\n'
   [ -n "$proj" ] && printf '  ✓ 项目: %s\n' "$proj"
 
   printf '\n  ── 检测到的技术栈 ──\n'
@@ -724,7 +735,7 @@ print_summary() {
   printf '     → ai-workflow/四阶段工作流.html\n\n'
   printf '  5. 打开四阶段使用说明页（可选）\n'
   printf '     → ai-workflow/四阶段使用说明.html\n\n'
-  printf '  6. 重启 Claude Code / Codex 会话，触发词生效:\n'
+  printf '  6. 重启 Codex / Claude Code 会话，触发词生效:\n'
   printf '     开工准备: 「开始前准备」「需求澄清」「先 grill 我」\n'
   printf '     验证闭环: 「验证一下」「修好了吗」「确认生效」\n'
   printf '     归因:     「根因是什么」「先别急着改」「归因」\n'
@@ -738,20 +749,23 @@ do_project_uninstall() {
 
   printf '\n  ▶ 项目级卸载\n'
 
-  # 移除 CLAUDE.md 中的标记区域
-  local target="$proj/CLAUDE.md"
-  if [ -f "$target" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
-    local tmp_file
-    tmp_file="$(mktemp)"
-    awk '
-      /FOUR-[^-]+-AI-WORKFLOW-BEGIN/ { skip=1; next }
-      /FOUR-[^-]+-AI-WORKFLOW-END/   { skip=0; next }
-      !skip { print }
-    ' "$target" > "$tmp_file" && mv "$tmp_file" "$target"
-    log "移除 CLAUDE.md 中的四阶段片段"
-  else
-    skip "CLAUDE.md 中无四阶段片段"
-  fi
+  local instruction_file
+  for instruction_file in "$proj/AGENTS.md" "$proj/CLAUDE.md"; do
+    local filename
+    filename="$(basename "$instruction_file")"
+    if [ -f "$instruction_file" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$instruction_file" 2>/dev/null; then
+      local tmp_file
+      tmp_file="$(mktemp)"
+      awk '
+        /FOUR-[^-]+-AI-WORKFLOW-BEGIN/ { skip=1; next }
+        /FOUR-[^-]+-AI-WORKFLOW-END/   { skip=0; next }
+        !skip { print }
+      ' "$instruction_file" > "$tmp_file" && mv "$tmp_file" "$instruction_file"
+      log "移除 $filename 中的四阶段片段"
+    else
+      skip "$filename 中无四阶段片段"
+    fi
+  done
 
   # 确认删除 ai-workflow/
   if [ -d "$awd" ]; then
@@ -779,13 +793,17 @@ do_project_check() {
 
   [ -d "$awd" ] && log "ai-workflow/ 存在" || printf '  ✗ ai-workflow/ 不存在\n'
 
-  # CLAUDE.md 标记
-  local target="$proj/CLAUDE.md"
-  if [ -f "$target" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$target" 2>/dev/null; then
-    log "CLAUDE.md 四阶段片段已注入"
-  else
-    printf '  ✗ CLAUDE.md 未注入四阶段片段\n'
-  fi
+  # 项目说明文件标记
+  local instruction_file
+  for instruction_file in "$proj/AGENTS.md" "$proj/CLAUDE.md"; do
+    local filename
+    filename="$(basename "$instruction_file")"
+    if [ -f "$instruction_file" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$instruction_file" 2>/dev/null; then
+      log "$filename 四阶段片段已注入"
+    else
+      printf '  ✗ %s 未注入四阶段片段\n' "$filename"
+    fi
+  done
 
   # 关键文件
   [ -f "$awd/环境真相档案.md" ] && log "环境真相档案.md 存在" || printf '  ✗ 环境真相档案.md 缺失\n'
@@ -818,7 +836,7 @@ main() {
       --with-review-addon) install_review_addon=true; shift ;;
       --help|-h)
         echo "用法:"
-        echo "  bash deploy.sh                                  仅全局安装（Claude + Codex）"
+        echo "  bash deploy.sh                                  仅全局安装（Codex + Claude）"
         echo "  bash deploy.sh /path/to/project                 全局 + 项目级部署"
         echo "  bash deploy.sh --with-review-addon /path        部署项目时同时安装 code-self-review 增补"
         echo "  bash deploy.sh --install-review-addon           仅安装 code-self-review 取值地图增补"
@@ -876,7 +894,7 @@ main() {
         create_workflow_dir "$project_path"
         generate_truth_archive "$project_path"
         generate_value_map_guide "$project_path"
-        inject_claude_md "$project_path"
+        inject_project_instructions "$project_path"
         if [ "$install_review_addon" = true ]; then
           do_review_addon_install || warn "跳过 code-self-review 增补；主部署已完成"
         fi
@@ -889,7 +907,7 @@ main() {
         printf '\n  ✓ 全局 Skills 安装完成。\n'
         printf '  → 要部署到项目: bash deploy.sh /path/to/project\n'
         printf '  → 要安装 review 增补: bash deploy.sh --install-review-addon\n'
-        printf '  → 重启 Claude Code / Codex 会话后触发词生效:\n'
+        printf '  → 重启 Codex / Claude Code 会话后触发词生效:\n'
         printf '    开工准备: 「开始前准备」「需求澄清」「先 grill 我」\n'
         printf '    验证闭环: 「验证一下」「修好了吗」「确认生效」\n'
         printf '    归因:     「根因是什么」「先别急着改」「归因」\n'
