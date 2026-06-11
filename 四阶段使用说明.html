@@ -423,7 +423,8 @@
             <p>这一步只需要做一次。它会把 <code>/four-stage-install</code> 安装到当前用户的 Claude Code 全局 skills 目录。</p>
             <div class="command">
               <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-install">复制</button></div>
-              <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh | bash</pre>
+              <pre id="cmd-install">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh -o /tmp/four-stage-install-claude-command.sh
+bash /tmp/four-stage-install-claude-command.sh</pre>
             </div>
           </div>
           <div class="card">
@@ -453,7 +454,7 @@ claude</pre>
           </div>
           <div class="card">
             <h3>在 Claude Code 输入</h3>
-            <p>这个 slash command 会在当前业务 repo 执行远程 bootstrap。</p>
+            <p>这个 slash command 会在当前业务 repo 执行本地缓存的 bootstrap。</p>
             <div class="command">
               <div class="command-head"><span>claude code</span><button class="copy" data-copy="#cmd-slash">复制</button></div>
               <pre id="cmd-slash">/four-stage-install</pre>
@@ -567,7 +568,8 @@ claude</pre>
             <p>不用 Claude Code slash command 时，直接在业务 repo 根目录运行。</p>
             <div class="command">
               <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-bootstrap">复制</button></div>
-              <pre id="cmd-bootstrap">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash</pre>
+              <pre id="cmd-bootstrap">curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
+bash /tmp/four-stage-bootstrap.sh</pre>
             </div>
           </div>
           <div class="card">

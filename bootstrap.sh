@@ -1,15 +1,29 @@
 #!/usr/bin/env bash
 # 四阶段 AI 开发工作流 · 远程一行安装入口
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash -s -- --with-review-addon /path/to/project
+#   curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
+#   bash /tmp/four-stage-bootstrap.sh --with-review-addon /path/to/project
 set -euo pipefail
 
 REPO_URL="${FOUR_STAGE_WORKFLOW_REPO:-https://github.com/Coder42Y/four-gate-ai-workflow.git}"
-BRANCH="${FOUR_STAGE_WORKFLOW_BRANCH:-master}"
 INSTALL_DIR="${FOUR_STAGE_WORKFLOW_HOME:-$HOME/.four-stage-ai-workflow}"
 
 log() { printf '  %s\n' "$*"; }
 die() { printf '  ✗ %s\n' "$*" >&2; exit 1; }
+
+detect_default_branch() {
+  local current=""
+  if [ -d "$INSTALL_DIR/.git" ] && command -v git >/dev/null 2>&1; then
+    current="$(git -C "$INSTALL_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+  fi
+  if [ -n "$current" ] && [ "$current" != "HEAD" ]; then
+    printf '%s\n' "$current"
+  else
+    printf 'master\n'
+  fi
+}
+
+BRANCH="${FOUR_STAGE_WORKFLOW_BRANCH:-$(detect_default_branch)}"
 
 if ! command -v git >/dev/null 2>&1; then
   die "需要先安装 git"

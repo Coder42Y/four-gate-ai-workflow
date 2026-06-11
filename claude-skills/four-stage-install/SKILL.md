@@ -1,18 +1,18 @@
 ---
 name: four-stage-install
-description: Install the Four Stage AI Workflow into the current business repository. Invoke manually with `/four-stage-install` after `cd` into the target repo and starting Claude Code. This command runs the remote bootstrap installer, injects project workflow files, and updates the global workflow skills.
+description: Install the Four Stage AI Workflow into the current business repository. Invoke manually with `/four-stage-install` after `cd` into the target repo and starting Claude Code. This command runs the locally cached bootstrap installer, injects project workflow files, and updates the global workflow skills.
 disable-model-invocation: true
 argument-hint: "Run from the target repo root"
-allowed-tools: Bash(curl:*)
+allowed-tools: Bash(bash:*)
 ---
 
 # Four Stage Installer
 
-Run the remote bootstrap installer for the current Claude Code working directory.
+Run the locally cached bootstrap installer for the current Claude Code working directory.
 
 Install result:
 
-!`curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash`
+!`bash "${FOUR_STAGE_WORKFLOW_HOME:-$HOME/.four-stage-ai-workflow}/bootstrap.sh"`
 
 After the command finishes:
 

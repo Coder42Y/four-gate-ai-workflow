@@ -30,7 +30,8 @@
 给 Claude Code 用户的推荐路径：先全局安装一次命令入口，之后每个新业务 repo 里用 slash command 接入。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/install-claude-command.sh -o /tmp/four-stage-install-claude-command.sh
+bash /tmp/four-stage-install-claude-command.sh
 ```
 
 之后每个新业务 repo：
@@ -46,20 +47,22 @@ claude
 /four-stage-install
 ```
 
-它会在**当前业务 repo** 自动执行远程 bootstrap，生成 `ai-workflow/`、注入 `CLAUDE.md`，并全局安装/更新四阶段 workflow skills。日常 coding 不需要进入本仓库。
+它会在**当前业务 repo** 自动执行本地缓存的 bootstrap，生成 `ai-workflow/`、注入 `CLAUDE.md`，并全局安装/更新四阶段 workflow skills。日常 coding 不需要进入本仓库。
 
 ## 命令行部署
 
 不用 Claude Code slash command 时，也可以在目标业务项目根目录直接运行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash -s -- --with-review-addon /path/to/your/project
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
+bash /tmp/four-stage-bootstrap.sh --with-review-addon /path/to/your/project
 ```
 
 如果已经在目标项目根目录，可直接运行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
+bash /tmp/four-stage-bootstrap.sh
 ```
 
 这会把工作流仓库缓存到 `~/.four-stage-ai-workflow`，之后自动调用 `deploy.sh`。重复执行会先更新缓存仓库，再重新部署。
