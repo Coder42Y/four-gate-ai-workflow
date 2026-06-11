@@ -420,7 +420,7 @@
         <div class="grid two">
           <div class="card">
             <h3>给同事复制这一条</h3>
-            <p>在业务项目根目录执行。它会拉取工作流仓库，安装 Codex skills，并把四阶段纪律写入当前项目。</p>
+            <p>在业务项目根目录执行。它会拉取工作流仓库，安装 Codex skills，并把自然语言路由写入当前项目。</p>
             <div class="command">
               <div class="command-head"><span>terminal</span><button class="copy" data-copy="#cmd-install">复制</button></div>
               <pre id="cmd-install">cd /path/to/business-repo
@@ -433,7 +433,7 @@ bash /tmp/four-stage-bootstrap.sh</pre>
             <ul>
               <li><code>~/.four-stage-ai-workflow</code>：缓存本工作流仓库。</li>
               <li><code>~/.agents/skills</code>：Codex 可发现的三个 workflow skills。</li>
-              <li><code>AGENTS.md</code>：Codex 启动时读取的项目级四阶段纪律。</li>
+              <li><code>AGENTS.md</code>：Codex 启动时读取的项目级自然语言路由。</li>
               <li>安装完后，业务开发仍然在业务 repo 里做，不需要切到本仓库。</li>
             </ul>
           </div>
@@ -469,7 +469,7 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
           <div class="flow-step"><b>更新缓存</b><span>拉取或更新 <code>~/.four-stage-ai-workflow</code></span></div>
           <div class="flow-step"><b>安装 skills</b><span>软链到 <code>~/.agents/skills</code> 与 <code>~/.claude/skills</code></span></div>
           <div class="flow-step"><b>注入项目</b><span>生成 <code>ai-workflow/</code>，注入 <code>AGENTS.md</code></span></div>
-          <div class="flow-step"><b>开始使用</b><span>重开 Codex 会话后按四阶段处理任务</span></div>
+          <div class="flow-step"><b>开始使用</b><span>重开 Codex 会话后按自然语言触发</span></div>
         </div>
       </div>
     </section>
@@ -495,12 +495,12 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
               <tr>
                 <td>看到一个 bug</td>
                 <td><code>先归因，不要急着写代码。现象是：...</code></td>
-                <td>触发阶段 0，先判定代码 / 配置 / 运维 / 数据是哪层。</td>
+                <td>触发动码前归因，先判定代码 / 配置 / 运维 / 数据是哪层。</td>
               </tr>
               <tr>
                 <td>要完整处理一个任务</td>
-                <td><code>按四阶段工作流处理这个任务：...</code></td>
-                <td>按准备、归因、外部真相、取值地图、验证闭环的顺序做。</td>
+                <td><code>按工作流处理这个任务：...</code></td>
+                <td>先收敛任务，再归因、核对外部真相、查取值地图，最后验证闭环。</td>
               </tr>
               <tr>
                 <td>准备收尾</td>
@@ -528,7 +528,7 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
         <div class="grid">
           <div class="card">
             <h3><code>AGENTS.md</code></h3>
-            <p>Codex 启动时读取的项目级纪律：动码前先归因、读环境真相档案、按取值地图走、收尾必须验证。</p>
+            <p>Codex 启动时读取的项目级路由：按用户自然语言自动触发澄清、归因、取值地图、验证和回灌。</p>
           </div>
           <div class="card">
             <h3><code>ai-workflow/环境真相档案.md</code></h3>
@@ -609,7 +609,7 @@ bash /tmp/four-stage-bootstrap.sh</pre>
             </thead>
             <tbody>
               <tr>
-                <td><span class="bad">Codex 没读到四阶段纪律</span></td>
+                <td><span class="bad">Codex 没读到项目路由</span></td>
                 <td>不是从业务 repo 根目录启动，或 <code>AGENTS.md</code> 未注入。</td>
                 <td>回到业务 repo 根目录，执行 <code>~/.four-stage-ai-workflow/deploy.sh --check .</code>，然后重启 Codex。</td>
               </tr>

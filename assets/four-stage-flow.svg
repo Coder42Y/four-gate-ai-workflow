@@ -1,130 +1,151 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="760" viewBox="0 0 1800 760" role="img" aria-labelledby="title desc">
-  <title id="title">四阶段 AI 开发工作流说明图</title>
-  <desc id="desc">任务到手后依次经过阶段0归因、阶段1外部真相、阶段2取值地图、阶段3验证闭环，再宣称完成；收尾后把踩坑回灌到项目档案。</desc>
+  <title id="title">AI 开发工作流自然语言触发图</title>
+  <desc id="desc">开发者用自然语言描述任务，AGENTS.md 进行意图路由，Codex 自动触发任务澄清、归因、取值地图、验证闭环，并把新真相回灌到项目档案。</desc>
   <defs>
-    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#e9e3d8" stroke-width="1"/>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#e7e1d6" stroke-width="1"/>
     </pattern>
-    <filter id="shadow" x="-18%" y="-24%" width="136%" height="156%">
-      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#202737" flood-opacity="0.13"/>
+    <filter id="shadow" x="-16%" y="-22%" width="132%" height="150%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#1d2433" flood-opacity=".14"/>
     </filter>
-    <marker id="arrow" markerWidth="16" markerHeight="16" refX="15" refY="8" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 1 1 L 15 8 L 1 15 z" fill="#596274"/>
+    <marker id="arrow" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 2 L 16 9 L 2 16 z" fill="#4f5d70"/>
     </marker>
-    <marker id="arrow-green" markerWidth="17" markerHeight="17" refX="16" refY="8.5" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 1 1 L 16 8.5 L 1 16 z" fill="#16845f"/>
+    <marker id="arrow-green" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 2 L 16 9 L 2 16 z" fill="#16845f"/>
     </marker>
     <style>
       .bg { fill: #f7f5ef; }
-      .grid { fill: url(#grid); opacity: .64; }
-      .title { font: 800 46px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1c2332; }
-      .subtitle { font: 400 20px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #5f6877; }
-      .card { fill: #ffffff; stroke: #ddd6c8; stroke-width: 2; filter: url(#shadow); }
-      .loop-card { fill: #f2fbf6; stroke: #a8d8c0; stroke-width: 2; filter: url(#shadow); }
-      .kicker { font: 800 15px "SFMono-Regular", Consolas, Menlo, monospace; letter-spacing: 1.4px; }
-      .card-title { font: 800 29px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1c2332; }
-      .body-strong { font: 800 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #2b3240; }
-      .body { font: 500 20px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #4b5362; }
-      .loop-title { font: 800 29px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #116b4d; }
-      .loop-body { font: 700 23px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #245b48; }
+      .grid { fill: url(#grid); opacity: .62; }
+      .title { font: 800 46px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1d2433; }
+      .subtitle { font: 400 20px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #5e6878; }
+      .card { fill: #fff; stroke: #dcd4c8; stroke-width: 2; filter: url(#shadow); }
+      .router { fill: #eef6ff; stroke: #9ec3e6; stroke-width: 2; filter: url(#shadow); }
+      .group { fill: rgba(255, 255, 255, .54); stroke: #d8d1c5; stroke-width: 2; }
+      .archive { fill: #f0fbf5; stroke: #a8d8c0; stroke-width: 2; filter: url(#shadow); }
+      .kicker { font: 800 14px "SFMono-Regular", Consolas, Menlo, monospace; letter-spacing: 1.2px; }
+      .h2 { font: 800 28px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #1d2433; }
+      .h3 { font: 800 22px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #253044; }
+      .body { font: 500 19px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #4f5968; }
+      .small { font: 500 16px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #687284; }
+      .mono { font: 700 16px "SFMono-Regular", Consolas, Menlo, monospace; fill: #435064; }
       .note { font: 500 18px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; fill: #756f66; }
-      .arrow { stroke: #596274; stroke-width: 4; fill: none; marker-end: url(#arrow); stroke-linecap: butt; stroke-linejoin: round; }
+      .arrow { stroke: #4f5d70; stroke-width: 4; fill: none; marker-end: url(#arrow); stroke-linecap: butt; stroke-linejoin: round; }
       .return { stroke: #16845f; stroke-width: 5; fill: none; marker-end: url(#arrow-green); stroke-linecap: butt; stroke-linejoin: round; }
-      .guide { stroke: #16845f; stroke-width: 3; fill: none; stroke-dasharray: 10 10; stroke-linecap: round; opacity: .55; }
-      .input { fill: #2f6fa7; }
-      .stage0 { fill: #b77818; }
-      .stage1 { fill: #2469a9; }
-      .stage2 { fill: #0d8274; }
-      .stage3 { fill: #16845f; }
+      .input-bar { fill: #2f6fa7; }
+      .route-bar { fill: #2266a8; }
+      .preflight { fill: #7f62b3; }
+      .rootcause { fill: #b77818; }
+      .truth { fill: #0d8274; }
+      .verify { fill: #16845f; }
       .done { fill: #283142; }
-      .input-text { fill: #2f6fa7; }
-      .stage0-text { fill: #9b5f0e; }
-      .stage1-text { fill: #2469a9; }
-      .stage2-text { fill: #0d7468; }
-      .stage3-text { fill: #16845f; }
-      .done-text { fill: #283142; }
+      .purple-text { fill: #6f55a1; }
+      .amber-text { fill: #9b5f0e; }
+      .teal-text { fill: #0d7468; }
+      .green-text { fill: #16845f; }
+      .blue-text { fill: #2266a8; }
+      .chip { fill: #f8fafc; stroke: #dce2ea; stroke-width: 1.5; }
     </style>
   </defs>
 
   <rect class="bg" width="1800" height="760"/>
   <rect class="grid" width="1800" height="760"/>
 
-  <text class="title" x="72" y="78">四阶段 AI 开发工作流</text>
-  <text class="subtitle" x="72" y="116">先归因，再核对外部真相；把取值路径钉死，拿到实证后才宣称完成。</text>
+  <text class="title" x="72" y="78">AI 开发工作流 · 自然语言触发</text>
+  <text class="subtitle" x="72" y="116">开发者正常描述任务，Codex 根据意图自动进入澄清、归因、取值、验证和回灌。</text>
 
-  <path class="arrow" d="M 248 305 L 290 305"/>
-  <path class="arrow" d="M 535 305 L 577 305"/>
-  <path class="arrow" d="M 822 305 L 864 305"/>
-  <path class="arrow" d="M 1109 305 L 1151 305"/>
-  <path class="arrow" d="M 1396 305 L 1438 305"/>
-
-  <g transform="translate(78 210)">
-    <rect class="card" x="0" y="0" width="170" height="190" rx="8"/>
-    <rect class="input" x="0" y="0" width="170" height="8" rx="4"/>
-    <text class="kicker input-text" x="24" y="40">INPUT</text>
-    <text class="card-title" x="85" y="83" text-anchor="middle">任务到手</text>
-    <text class="body-strong" x="85" y="124" text-anchor="middle">需求 / Bug</text>
-    <text class="body" x="85" y="158" text-anchor="middle">先写清简报</text>
+  <g transform="translate(80 188)">
+    <rect class="card" x="0" y="0" width="285" height="260" rx="8"/>
+    <rect class="input-bar" x="0" y="0" width="285" height="8" rx="4"/>
+    <text class="kicker blue-text" x="24" y="42">NATURAL LANGUAGE</text>
+    <text class="h2" x="24" y="82">开发者自然说</text>
+    <rect class="chip" x="24" y="108" width="237" height="32" rx="6"/>
+    <text class="small" x="40" y="130">帮我修一下这个问题</text>
+    <rect class="chip" x="24" y="150" width="237" height="32" rx="6"/>
+    <text class="small" x="40" y="172">线上没生效，先看看</text>
+    <rect class="chip" x="24" y="192" width="237" height="32" rx="6"/>
+    <text class="small" x="40" y="214">这里要取状态名</text>
+    <text class="note" x="24" y="244">不要求记阶段号。</text>
   </g>
 
-  <g transform="translate(290 210)">
-    <rect class="card" x="0" y="0" width="245" height="190" rx="8"/>
-    <rect class="stage0" x="0" y="0" width="245" height="8" rx="4"/>
-    <text class="kicker stage0-text" x="24" y="40">STAGE 0</text>
-    <text class="card-title" x="122.5" y="83" text-anchor="middle">归因</text>
-    <text class="body-strong" x="122.5" y="124" text-anchor="middle">先定位是哪一层</text>
-    <text class="body" x="122.5" y="158" text-anchor="middle">非代码层不写码</text>
+  <path class="arrow" d="M 365 318 L 430 318"/>
+
+  <g transform="translate(430 188)">
+    <rect class="router" x="0" y="0" width="315" height="260" rx="8"/>
+    <rect class="route-bar" x="0" y="0" width="315" height="8" rx="4"/>
+    <text class="kicker blue-text" x="24" y="42">AGENTS.md</text>
+    <text class="h2" x="24" y="82">意图路由</text>
+    <text class="body" x="24" y="122">读取项目规则</text>
+    <text class="body" x="24" y="156">判断当前动作风险</text>
+    <text class="body" x="24" y="190">选择对应 skill / 档案</text>
+    <text class="mono" x="24" y="232">skills + ai-workflow/</text>
   </g>
 
-  <g transform="translate(577 210)">
-    <rect class="card" x="0" y="0" width="245" height="190" rx="8"/>
-    <rect class="stage1" x="0" y="0" width="245" height="8" rx="4"/>
-    <text class="kicker stage1-text" x="24" y="40">STAGE 1</text>
-    <text class="card-title" x="122.5" y="83" text-anchor="middle">外部真相</text>
-    <text class="body-strong" x="122.5" y="124" text-anchor="middle">先核代码外事实</text>
-    <text class="body" x="122.5" y="158" text-anchor="middle">配置 / 数据 / 运维</text>
+  <path class="arrow" d="M 745 318 L 790 318"/>
+
+  <g transform="translate(790 132)">
+    <rect class="group" x="0" y="0" width="545" height="394" rx="10"/>
+    <text class="note" x="22" y="34">核心动作自动接管</text>
   </g>
 
-  <g transform="translate(864 210)">
-    <rect class="card" x="0" y="0" width="245" height="190" rx="8"/>
-    <rect class="stage2" x="0" y="0" width="245" height="8" rx="4"/>
-    <text class="kicker stage2-text" x="24" y="40">STAGE 2</text>
-    <text class="card-title" x="122.5" y="83" text-anchor="middle">取值地图</text>
-    <text class="body-strong" x="122.5" y="124" text-anchor="middle">钉到唯一正路</text>
-    <text class="body" x="122.5" y="158" text-anchor="middle">页面 → API → DB</text>
+  <g transform="translate(810 150)">
+    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+    <rect class="preflight" x="0" y="0" width="235" height="8" rx="4"/>
+    <text class="kicker purple-text" x="22" y="38">TASK</text>
+    <text class="h3" x="22" y="74">任务简报</text>
+    <text class="body" x="22" y="108">目标 / 边界</text>
+    <text class="body" x="22" y="136">验收 / 风险</text>
   </g>
 
-  <g transform="translate(1151 210)">
-    <rect class="card" x="0" y="0" width="245" height="190" rx="8"/>
-    <rect class="stage3" x="0" y="0" width="245" height="8" rx="4"/>
-    <text class="kicker stage3-text" x="24" y="40">STAGE 3</text>
-    <text class="card-title" x="122.5" y="83" text-anchor="middle">验证闭环</text>
-    <text class="body-strong" x="122.5" y="124" text-anchor="middle">跑命令，看证据</text>
-    <text class="body" x="122.5" y="158" text-anchor="middle">无实证不收口</text>
+  <g transform="translate(1080 150)">
+    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+    <rect class="rootcause" x="0" y="0" width="235" height="8" rx="4"/>
+    <text class="kicker amber-text" x="22" y="38">ROOT CAUSE</text>
+    <text class="h3" x="22" y="74">动码前归因</text>
+    <text class="body" x="22" y="108">代码 / 配置</text>
+    <text class="body" x="22" y="136">运维 / 数据</text>
   </g>
 
-  <g transform="translate(1438 210)">
-    <rect class="card" x="0" y="0" width="245" height="190" rx="8"/>
-    <rect class="done" x="0" y="0" width="245" height="8" rx="4"/>
-    <text class="kicker done-text" x="24" y="40">DONE</text>
-    <text class="card-title" x="122.5" y="83" text-anchor="middle">宣称完成</text>
-    <text class="body-strong" x="122.5" y="124" text-anchor="middle">证据齐全后</text>
-    <text class="body" x="122.5" y="158" text-anchor="middle">风险也说清</text>
+  <g transform="translate(810 348)">
+    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+    <rect class="truth" x="0" y="0" width="235" height="8" rx="4"/>
+    <text class="kicker teal-text" x="22" y="38">TRUTH MAP</text>
+    <text class="h3" x="22" y="74">外部真相</text>
+    <text class="body" x="22" y="108">档案 + 取值地图</text>
+    <text class="body" x="22" y="136">不自创查法</text>
   </g>
 
-  <path class="guide" d="M 1560.5 400 L 1560.5 495"/>
-  <path class="return" d="M 1560.5 400 L 1560.5 495"/>
-
-  <g transform="translate(290 495)">
-    <rect class="loop-card" x="0" y="0" width="1295" height="128" rx="8"/>
-    <text class="loop-title" x="42" y="48">回灌项目档案</text>
-    <text class="loop-body" x="42" y="89">踩坑即写回环境真相、取值地图和验证记录；AI 起草，人审合并。</text>
-    <text class="note" x="830" y="50">下一次任务从更新后的事实开始。</text>
-    <text class="note" x="830" y="86">档案越准，AI 越少猜。</text>
+  <g transform="translate(1080 348)">
+    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+    <rect class="verify" x="0" y="0" width="235" height="8" rx="4"/>
+    <text class="kicker green-text" x="22" y="38">VERIFY</text>
+    <text class="h3" x="22" y="74">验证闭环</text>
+    <text class="body" x="22" y="108">命令 / 接口</text>
+    <text class="body" x="22" y="136">截图 / 日志</text>
   </g>
 
-  <path class="return" d="M 290 559 L 163 559 L 163 400"/>
-  <text class="note" x="1582" y="452">收尾后回灌</text>
+  <path class="arrow" d="M 1045 229 L 1080 229"/>
+  <path class="arrow" d="M 1045 427 L 1080 427"/>
+  <path class="arrow" d="M 1335 318 L 1380 318"/>
 
-  <text class="note" x="72" y="716">阶段纪律：按 0 → 1 → 2 → 3 顺序执行，不跳步；非代码层不写代码，未验证不宣称完成。</text>
+  <g transform="translate(1380 188)">
+    <rect class="card" x="0" y="0" width="300" height="260" rx="8"/>
+    <rect class="done" x="0" y="0" width="300" height="8" rx="4"/>
+    <text class="kicker" x="24" y="42" fill="#283142">DONE</text>
+    <text class="h2" x="24" y="82">可宣称完成</text>
+    <text class="body" x="24" y="122">证据齐全</text>
+    <text class="body" x="24" y="156">风险说清</text>
+    <text class="body" x="24" y="190">缺口列明</text>
+    <text class="note" x="24" y="232">不用“应该可以”。</text>
+  </g>
+
+  <path class="return" d="M 1530 448 L 1530 590 L 365 590 L 365 448"/>
+
+  <g transform="translate(480 548)">
+    <rect class="archive" x="0" y="0" width="780" height="88" rx="8"/>
+    <text class="h3" x="32" y="38" fill="#116b4d">回灌项目档案</text>
+    <text class="body" x="32" y="68">新配置坑、新取值正路、新验证探针，由 AI 起草，人审合并。</text>
+  </g>
+
+  <text class="note" x="72" y="716">核心规则：非代码层不写代码；外部值不自创查法；没有可复核实证，不宣称完成。</text>
 </svg>

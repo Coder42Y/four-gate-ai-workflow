@@ -562,7 +562,7 @@ generate_value_map_guide() {
 
 ## 什么是取值地图？
 
-取值地图是四阶段工作流 **阶段 2** 的核心工具。它解决的问题是：
+取值地图是本工作流的核心工具。它解决的问题是：
 
 > 代码调用了正确的 API，但**走错了取值路径**，导致数据错误。这类 bug 裸眼看不出来，grep 硬编码数字也抓不到（因为用的都是合法 API），只有跑起来才会出问题。
 
@@ -606,43 +606,43 @@ GUIDE
 
 project_instruction_snippet() {
   cat <<'SNIPPET'
-<!-- 四阶段工作流 · 自动注入 · 不要手动修改此区域 -->
+<!-- AI 工作流 · 自动注入 · 不要手动修改此区域 -->
 <!-- 要卸载: bash deploy.sh --uninstall /path/to/project -->
 
-## AI 开发纪律 · 四阶段（本项目强制）
+## AI 开发工作流 · 意图路由
 
-> 这是面向真实业务开发的 AI 协作纪律。详规见 `ai-workflow/四阶段蓝图.md`。**按 0→1→2→3 顺序执行，不跳步。**
+> 详规见 `ai-workflow/四阶段蓝图.md`。日常使用不要求用户说“阶段 0/1/2/3”；你要根据用户的自然语言和当前动作自动选择对应约束。
 
-### 阶段 0 · 归因（动码前先定层）
-动任何代码前，先把问题钉到 **代码 / 配置 / 运维 / 数据** 某一层并给证据。
-**不是"代码"层就不许写代码**——先去对应层求证。
-（配置中心、权限系统、流程引擎、外部服务里的很多"bug"不是代码问题，写代码修=白费+引新 bug。触发 `attribute-rootcause` skill。）
+### 自然语言路由
 
-### 阶段 1 · 外部真相（先核对，再动手）
-动手前读 `ai-workflow/环境真相档案.md`（或本项目说明文件中的"环境真相"段）。
-**结构性真相入档案、运行时状态现场探针**——别把"列建了没/目标环境是不是新版本"写死进文档（必过期），也别靠现探去问稳定结构。
+| 用户/任务状态 | 你要自动做什么 | 对应资产 |
+|---|---|---|
+| “帮我做/修一下/实现一下”，但目标、边界、复现或验收不清 | 先收敛任务简报；能查就自己查，查不到一次问一个关键问题 | `ai-task-preflight` |
+| “不对/报错/没生效/找不到人/按钮异常/为什么这样” | 动码前先归因到代码/配置/运维/数据；非代码层不写代码 | `attribute-rootcause` |
+| 准备读取外部 ID、字典、状态、角色、组织、配置值 | 先查 `ai-workflow/环境真相档案.md` 的取值地图；表里没有就停下问人 | 环境真相档案 §四 |
+| 涉及配置中心、流程引擎、权限系统、DB 迁移、部署链路、缓存 | 先核对环境真相；结构性真相读档案，运行时状态现场探针 | 环境真相档案 |
+| 准备说“修好了/完成了/可以合/部署成功/应该没问题” | 先按改动类型拿可复核实证；缺实证就说“未验证完成” | `verify-closure` |
+| 本次发现新的配置坑、取值正路、部署探针或验证矩阵 | 起草回灌条目，追加到档案候选区，交人审 | 环境真相档案 §八 |
 
-### 阶段 2 · 取值地图（不写死 ID 的真正含义）
-取任何外部值前查「取值地图」（档案 §四）把概念钉到**唯一正路**。
-**警告**：不写死 ID ≠ 只是别写裸数字。走真 API 也会取错值。表里没有的概念，**停下问人，绝不自创查法**。
+### 硬规则
 
-### 阶段 3 · 验证闭环（无实证不许说"修好了"）
-**铁律**：「修好了 / 部署成功 / 应该没问题 / 已完成」这类话，没有线上实证一律不许说出口。Evidence before assertions。
-按改动类型取实证（触发 `verify-closure` skill）：
-- 后端：确认代码已同步远端 + 目标环境版本/业务探针已更新
-- DB：实查列存在（**确认是否有自动迁移**）
-- 前端：清缓存重登后线上验
-- **部署 SUCCESS ≠ 生效**
+- **非代码层不写代码**：如果根因是配置、运维、数据或权限，输出对应动作清单，不用代码绕过去。
+- **外部值不自创查法**：不写死 ID 只是底线；调用真实 API 但走错路径同样是 bug。
+- **完成必须有证据**：没有命令输出、接口返回、截图、日志、版本号或目标环境探针，不要宣称完成。
+- **部署 SUCCESS 不等于生效**：远端 HEAD、CI 构建、后端包/前端产物、缓存、外部流程都可能藏旧东西。
+- **危险动作先确认**：写库、部署、删数据、权限变更、发通知等对外动作，先说明目标和证据再执行。
 
-### 回灌（每次收尾必做）
-任务收尾，若学到一条**新的外部真相**（新藏身处/新探针/新配置坑），**主动起草一条**追加到 `ai-workflow/环境真相档案.md` §八回灌候选区，交人审。真相档案是活体，AI 是默认抄写员。
+### 回灌格式
 
-### Hooks / 危险动作
-- 危险/对外动作（写库、部署、删数据）先取证、先确认；改/删前先查清目标。
-- hook 被拦（protect-files / safe-bash 等）先确认意图，别绕过。
-
-### 开工前准备
-需求模糊、目标不清、验收不明时，先触发 `ai-task-preflight`，形成任务简报，再进入阶段 0。
+```markdown
+## [回灌候选] <一句话标题>
+- 归类：部署链路 / DB / 取值地图 / 流程引擎 / 配置中心 / 前端 / 协作
+- 现象：
+- 真因：
+- 正解：
+- 证据：
+- 状态：待人审
+```
 SNIPPET
 }
 
@@ -651,7 +651,7 @@ inject_instruction_file() {
   local filename
   filename="$(basename "$target")"
 
-  printf '\n  ▶ 注入 %s 四阶段片段\n' "$label"
+  printf '\n  ▶ 注入 %s AI 工作流片段\n' "$label"
 
   local begin_marker="<!-- FOUR-STAGE-AI-WORKFLOW-BEGIN -->"
   local end_marker="<!-- FOUR-STAGE-AI-WORKFLOW-END -->"
@@ -682,14 +682,14 @@ inject_instruction_file() {
       }
       { print }
     ' "$target" > "$tmp_file" && mv "$tmp_file" "$target"
-    log "更新 $filename 中的四阶段片段"
+    log "更新 $filename 中的 AI 工作流片段"
   else
     {
       printf '\n%s\n' "$begin_marker"
       printf '%s\n' "$snippet"
       printf '%s\n' "$end_marker"
     } >> "$target"
-    log "追加四阶段片段到 $filename"
+    log "追加 AI 工作流片段到 $filename"
   fi
 }
 
@@ -761,9 +761,9 @@ do_project_uninstall() {
         /FOUR-[^-]+-AI-WORKFLOW-END/   { skip=0; next }
         !skip { print }
       ' "$instruction_file" > "$tmp_file" && mv "$tmp_file" "$instruction_file"
-      log "移除 $filename 中的四阶段片段"
+      log "移除 $filename 中的 AI 工作流片段"
     else
-      skip "$filename 中无四阶段片段"
+      skip "$filename 中无 AI 工作流片段"
     fi
   done
 
@@ -799,9 +799,9 @@ do_project_check() {
     local filename
     filename="$(basename "$instruction_file")"
     if [ -f "$instruction_file" ] && grep -Eq "FOUR-[^-]+-AI-WORKFLOW-BEGIN" "$instruction_file" 2>/dev/null; then
-      log "$filename 四阶段片段已注入"
+      log "$filename AI 工作流片段已注入"
     else
-      printf '  ✗ %s 未注入四阶段片段\n' "$filename"
+      printf '  ✗ %s 未注入 AI 工作流片段\n' "$filename"
     fi
   done
 

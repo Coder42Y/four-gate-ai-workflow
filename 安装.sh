@@ -79,7 +79,7 @@ do_install() {
   log ""
   log "下一步(可选，需你确认):"
   log "  - 把 环境真相档案.md 复制进目标项目根"
-  log "  - 把四阶段纪律片段粘进项目 AGENTS.md / CLAUDE.md"
+  log "  - 把自然语言路由片段粘进项目 AGENTS.md / CLAUDE.md"
   log "  - 用 bash deploy.sh --install-review-addon 自动并进 code-self-review"
 }
 
