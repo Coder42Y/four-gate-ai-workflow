@@ -395,7 +395,7 @@
         </div>
         <div class="quick-row">
           <div class="num">3</div>
-          <div><b>启动 Codex</b><span>开工准备、归因、验证闭环都在业务 repo 里完成</span></div>
+          <div><b>启动 Codex</b><span>方案发散、开工准备、归因、验证闭环都在业务 repo 里完成</span></div>
         </div>
       </div>
     </div>
@@ -432,7 +432,7 @@ bash /tmp/four-stage-bootstrap.sh</pre>
             <h3>它装了什么</h3>
             <ul>
               <li><code>~/.four-stage-ai-workflow</code>：缓存本工作流仓库。</li>
-              <li><code>~/.agents/skills</code>：Codex 可发现的三个 workflow skills。</li>
+              <li><code>~/.agents/skills</code>：Codex 可发现的四个 workflow skills。</li>
               <li><code>AGENTS.md</code>：Codex 启动时读取的项目级自然语言路由。</li>
               <li>安装完后，业务开发仍然在业务 repo 里做，不需要切到本仓库。</li>
             </ul>
@@ -488,6 +488,11 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
             </thead>
             <tbody>
               <tr>
+                <td>还在想方案</td>
+                <td><code>帮我想想这个功能怎么设计，先别写代码</code></td>
+                <td>触发 <code>ai-task-brainstorm</code>，先比较候选方案并给推荐路径。</td>
+              </tr>
+              <tr>
                 <td>需求还模糊</td>
                 <td><code>开始前准备：帮我把这个需求问完整</code></td>
                 <td>触发 <code>ai-task-preflight</code>，先形成 AI 任务简报。</td>
@@ -500,7 +505,7 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
               <tr>
                 <td>要完整处理一个任务</td>
                 <td><code>按工作流处理这个任务：...</code></td>
-                <td>先收敛任务，再归因、核对外部真相、查取值地图，最后验证闭环。</td>
+                <td>先发散/收敛方案，再形成任务简报、归因、核对外部真相、查取值地图，最后验证闭环。</td>
               </tr>
               <tr>
                 <td>准备收尾</td>
@@ -528,7 +533,7 @@ bash /tmp/four-stage-install-claude-command.sh</pre>
         <div class="grid">
           <div class="card">
             <h3><code>AGENTS.md</code></h3>
-            <p>Codex 启动时读取的项目级路由：按用户自然语言自动触发澄清、归因、取值地图、验证和回灌。</p>
+            <p>Codex 启动时读取的项目级路由：按用户自然语言自动触发方案发散、澄清、归因、取值地图、验证和回灌。</p>
           </div>
           <div class="card">
             <h3><code>ai-workflow/环境真相档案.md</code></h3>
@@ -626,7 +631,7 @@ bash /tmp/four-stage-bootstrap.sh</pre>
               <tr>
                 <td><span class="warn">skills 没立即触发</span></td>
                 <td>Codex / Claude Code 可能还没重新扫描 skills。</td>
-                <td>重开会话，再用“开始前准备”“先归因”“验证闭环”等触发词。</td>
+                <td>重开会话，再用“帮我想想”“开始前准备”“先归因”“验证闭环”等触发词。</td>
               </tr>
               <tr>
                 <td><span class="ok">同一个 repo 是否要重复装</span></td>

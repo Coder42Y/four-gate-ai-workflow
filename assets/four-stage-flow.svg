@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="760" viewBox="0 0 1800 760" role="img" aria-labelledby="title desc">
-  <title id="title">AI 开发工作流自然语言触发图</title>
-  <desc id="desc">开发者用自然语言描述任务，AGENTS.md 进行意图路由，Codex 自动触发任务澄清、归因、取值地图、验证闭环，并把新真相回灌到项目档案。</desc>
+  <title id="title">AI 开发工作流从想法到交付图</title>
+  <desc id="desc">开发者用自然语言描述粗想法或任务，AGENTS.md 进行意图路由，Codex 自动触发方案发散、任务澄清、归因、取值地图、实现、验证闭环，并把新真相回灌到项目档案。</desc>
   <defs>
     <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse">
       <path d="M 56 0 L 0 0 0 56" fill="none" stroke="#e7e1d6" stroke-width="1"/>
@@ -34,11 +34,14 @@
       .return { stroke: #16845f; stroke-width: 5; fill: none; marker-end: url(#arrow-green); stroke-linecap: butt; stroke-linejoin: round; }
       .input-bar { fill: #2f6fa7; }
       .route-bar { fill: #2266a8; }
+      .brainstorm { fill: #5f6fb9; }
       .preflight { fill: #7f62b3; }
       .rootcause { fill: #b77818; }
       .truth { fill: #0d8274; }
+      .build { fill: #2f6fa7; }
       .verify { fill: #16845f; }
       .done { fill: #283142; }
+      .indigo-text { fill: #5261a8; }
       .purple-text { fill: #6f55a1; }
       .amber-text { fill: #9b5f0e; }
       .teal-text { fill: #0d7468; }
@@ -51,8 +54,8 @@
   <rect class="bg" width="1800" height="760"/>
   <rect class="grid" width="1800" height="760"/>
 
-  <text class="title" x="72" y="78">AI 开发工作流 · 自然语言触发</text>
-  <text class="subtitle" x="72" y="116">开发者正常描述任务，Codex 根据意图自动进入澄清、归因、取值、验证和回灌。</text>
+  <text class="title" x="72" y="78">AI 开发工作流 · 从想法到交付</text>
+  <text class="subtitle" x="72" y="116">开发者正常描述粗想法或任务，Codex 根据意图自动进入发散、澄清、归因、取值、实现、验证和回灌。</text>
 
   <g transform="translate(80 188)">
     <rect class="card" x="0" y="0" width="285" height="260" rx="8"/>
@@ -60,11 +63,11 @@
     <text class="kicker blue-text" x="24" y="42">NATURAL LANGUAGE</text>
     <text class="h2" x="24" y="82">开发者自然说</text>
     <rect class="chip" x="24" y="108" width="237" height="32" rx="6"/>
-    <text class="small" x="40" y="130">帮我修一下这个问题</text>
+    <text class="small" x="40" y="130">帮我想想怎么设计</text>
     <rect class="chip" x="24" y="150" width="237" height="32" rx="6"/>
-    <text class="small" x="40" y="172">线上没生效，先看看</text>
+    <text class="small" x="40" y="172">帮我修一下这个问题</text>
     <rect class="chip" x="24" y="192" width="237" height="32" rx="6"/>
-    <text class="small" x="40" y="214">这里要取状态名</text>
+    <text class="small" x="40" y="214">线上没生效，先看看</text>
     <text class="note" x="24" y="244">不要求记阶段号。</text>
   </g>
 
@@ -83,49 +86,63 @@
 
   <path class="arrow" d="M 745 318 L 790 318"/>
 
-  <g transform="translate(790 132)">
-    <rect class="group" x="0" y="0" width="545" height="394" rx="10"/>
-    <text class="note" x="22" y="34">核心动作自动接管</text>
+  <g transform="translate(790 118)">
+    <rect class="group" x="0" y="0" width="545" height="430" rx="10"/>
   </g>
 
-  <g transform="translate(810 150)">
-    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+  <g transform="translate(810 146)">
+    <rect class="card" x="0" y="0" width="235" height="118" rx="8"/>
+    <rect class="brainstorm" x="0" y="0" width="235" height="8" rx="4"/>
+    <text class="kicker indigo-text" x="22" y="34">BRAINSTORM</text>
+    <text class="h3" x="22" y="68">方案推荐</text>
+    <text class="body" x="22" y="98">候选 / 取舍</text>
+  </g>
+
+  <g transform="translate(1080 146)">
+    <rect class="card" x="0" y="0" width="235" height="118" rx="8"/>
     <rect class="preflight" x="0" y="0" width="235" height="8" rx="4"/>
-    <text class="kicker purple-text" x="22" y="38">TASK</text>
-    <text class="h3" x="22" y="74">任务简报</text>
-    <text class="body" x="22" y="108">目标 / 边界</text>
-    <text class="body" x="22" y="136">验收 / 风险</text>
+    <text class="kicker purple-text" x="22" y="34">TASK</text>
+    <text class="h3" x="22" y="68">任务简报</text>
+    <text class="body" x="22" y="98">目标 / 验收</text>
   </g>
 
-  <g transform="translate(1080 150)">
-    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+  <g transform="translate(810 282)">
+    <rect class="card" x="0" y="0" width="235" height="118" rx="8"/>
     <rect class="rootcause" x="0" y="0" width="235" height="8" rx="4"/>
-    <text class="kicker amber-text" x="22" y="38">ROOT CAUSE</text>
-    <text class="h3" x="22" y="74">动码前归因</text>
-    <text class="body" x="22" y="108">代码 / 配置</text>
-    <text class="body" x="22" y="136">运维 / 数据</text>
+    <text class="kicker amber-text" x="22" y="34">ROOT CAUSE</text>
+    <text class="h3" x="22" y="68">动码前归因</text>
+    <text class="body" x="22" y="98">代码/配置/运维/数据</text>
   </g>
 
-  <g transform="translate(810 348)">
-    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+  <g transform="translate(1080 282)">
+    <rect class="card" x="0" y="0" width="235" height="118" rx="8"/>
     <rect class="truth" x="0" y="0" width="235" height="8" rx="4"/>
-    <text class="kicker teal-text" x="22" y="38">TRUTH MAP</text>
-    <text class="h3" x="22" y="74">外部真相</text>
-    <text class="body" x="22" y="108">档案 + 取值地图</text>
-    <text class="body" x="22" y="136">不自创查法</text>
+    <text class="kicker teal-text" x="22" y="34">TRUTH MAP</text>
+    <text class="h3" x="22" y="68">外部真相</text>
+    <text class="body" x="22" y="98">档案 + 取值地图</text>
   </g>
 
-  <g transform="translate(1080 348)">
-    <rect class="card" x="0" y="0" width="235" height="158" rx="8"/>
+  <g transform="translate(810 418)">
+    <rect class="card" x="0" y="0" width="235" height="118" rx="8"/>
+    <rect class="build" x="0" y="0" width="235" height="8" rx="4"/>
+    <text class="kicker blue-text" x="22" y="34">BUILD</text>
+    <text class="h3" x="22" y="68">实现改动</text>
+    <text class="body" x="22" y="98">按正路小步改</text>
+  </g>
+
+  <g transform="translate(1080 418)">
+    <rect class="card" x="0" y="0" width="235" height="118" rx="8"/>
     <rect class="verify" x="0" y="0" width="235" height="8" rx="4"/>
-    <text class="kicker green-text" x="22" y="38">VERIFY</text>
-    <text class="h3" x="22" y="74">验证闭环</text>
-    <text class="body" x="22" y="108">命令 / 接口</text>
-    <text class="body" x="22" y="136">截图 / 日志</text>
+    <text class="kicker green-text" x="22" y="34">VERIFY</text>
+    <text class="h3" x="22" y="68">验证闭环</text>
+    <text class="body" x="22" y="98">命令/接口/截图/日志</text>
   </g>
 
-  <path class="arrow" d="M 1045 229 L 1080 229"/>
-  <path class="arrow" d="M 1045 427 L 1080 427"/>
+  <path class="arrow" d="M 1045 205 L 1080 205"/>
+  <path class="arrow" d="M 928 264 L 928 282"/>
+  <path class="arrow" d="M 1045 341 L 1080 341"/>
+  <path class="arrow" d="M 1198 400 L 1198 418"/>
+  <path class="arrow" d="M 1045 477 L 1080 477"/>
   <path class="arrow" d="M 1335 318 L 1380 318"/>
 
   <g transform="translate(1380 188)">
@@ -139,13 +156,13 @@
     <text class="note" x="24" y="232">不用“应该可以”。</text>
   </g>
 
-  <path class="return" d="M 1530 448 L 1530 590 L 365 590 L 365 448"/>
+  <path class="return" d="M 1530 448 L 1530 602 L 365 602 L 365 448"/>
 
-  <g transform="translate(480 548)">
+  <g transform="translate(480 560)">
     <rect class="archive" x="0" y="0" width="780" height="88" rx="8"/>
     <text class="h3" x="32" y="38" fill="#116b4d">回灌项目档案</text>
     <text class="body" x="32" y="68">新配置坑、新取值正路、新验证探针，由 AI 起草，人审合并。</text>
   </g>
 
-  <text class="note" x="72" y="716">核心规则：非代码层不写代码；外部值不自创查法；没有可复核实证，不宣称完成。</text>
+  <text class="note" x="72" y="716">核心规则：brainstorming 不等于开工；非代码层不写代码；外部值不自创查法；没有可复核实证，不宣称完成。</text>
 </svg>

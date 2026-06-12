@@ -15,7 +15,7 @@ SKILLS_SRC="$HERE/skills"
 CLAUDE_SKILLS_DST="$HOME/.claude/skills"
 CODEX_SKILLS_DST="$HOME/.agents/skills"
 LEGACY_CODEX_SKILLS_DST="$HOME/.codex/skills"
-SKILL_NAMES=(ai-task-preflight verify-closure attribute-rootcause)
+SKILL_NAMES=(ai-task-brainstorm ai-task-preflight verify-closure attribute-rootcause)
 REVIEW_ADDON_BEGIN="<!-- FOUR-STAGE-VALUE-MAP-ADDON-BEGIN -->"
 REVIEW_ADDON_END="<!-- FOUR-STAGE-VALUE-MAP-ADDON-END -->"
 
@@ -617,7 +617,9 @@ project_instruction_snippet() {
 
 | 用户/任务状态 | 你要自动做什么 | 对应资产 |
 |---|---|---|
+| “帮我想想/brainstorm/怎么设计/有什么方案/从 0 到 1”，还没确定做法 | 先发散 2-4 个方案，再收敛到推荐路径；不写代码 | `ai-task-brainstorm` |
 | “帮我做/修一下/实现一下”，但目标、边界、复现或验收不清 | 先收敛任务简报；能查就自己查，查不到一次问一个关键问题 | `ai-task-preflight` |
+| 方向和任务简报已明确，准备改代码 | 先读相关代码与环境真相，按推荐路径小步实现；涉及外部值必须走取值地图 | `AGENTS.md` + 环境真相档案 |
 | “不对/报错/没生效/找不到人/按钮异常/为什么这样” | 动码前先归因到代码/配置/运维/数据；非代码层不写代码 | `attribute-rootcause` |
 | 准备读取外部 ID、字典、状态、角色、组织、配置值 | 先查 `ai-workflow/环境真相档案.md` 的取值地图；表里没有就停下问人 | 环境真相档案 §四 |
 | 涉及配置中心、流程引擎、权限系统、DB 迁移、部署链路、缓存 | 先核对环境真相；结构性真相读档案，运行时状态现场探针 | 环境真相档案 |
@@ -736,6 +738,7 @@ print_summary() {
   printf '  5. 打开四阶段使用说明页（可选）\n'
   printf '     → ai-workflow/四阶段使用说明.html\n\n'
   printf '  6. 重启 Codex / Claude Code 会话，触发词生效:\n'
+  printf '     方案发散: 「帮我想想」「brainstorm」「怎么设计」\n'
   printf '     开工准备: 「开始前准备」「需求澄清」「先 grill 我」\n'
   printf '     验证闭环: 「验证一下」「修好了吗」「确认生效」\n'
   printf '     归因:     「根因是什么」「先别急着改」「归因」\n'
@@ -908,6 +911,7 @@ main() {
         printf '  → 要部署到项目: bash deploy.sh /path/to/project\n'
         printf '  → 要安装 review 增补: bash deploy.sh --install-review-addon\n'
         printf '  → 重启 Codex / Claude Code 会话后触发词生效:\n'
+        printf '    方案发散: 「帮我想想」「brainstorm」「怎么设计」\n'
         printf '    开工准备: 「开始前准备」「需求澄清」「先 grill 我」\n'
         printf '    验证闭环: 「验证一下」「修好了吗」「确认生效」\n'
         printf '    归因:     「根因是什么」「先别急着改」「归因」\n'

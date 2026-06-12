@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 四阶段工作流 · 一键安装/卸载
 # 用法:
-#   bash 安装.sh            把三个 Skill 软链进 ~/.agents/skills/ 与 ~/.claude/skills/
+#   bash 安装.sh            把四个 Skill 软链进 ~/.agents/skills/ 与 ~/.claude/skills/
 #   bash 安装.sh --check    只检查当前安装状态，不改动
 #   bash 安装.sh --uninstall 移除软链（不删源文件）
 set -euo pipefail
@@ -10,7 +10,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SKILLS_SRC="$HERE/skills"
 CLAUDE_SKILLS_DST="$HOME/.claude/skills"
 CODEX_SKILLS_DST="$HOME/.agents/skills"
-NAMES=(ai-task-preflight verify-closure attribute-rootcause)
+NAMES=(ai-task-brainstorm ai-task-preflight verify-closure attribute-rootcause)
 
 log() { printf '%s\n' "$*"; }
 
@@ -73,6 +73,7 @@ do_install() {
   install_dir "Claude" "$CLAUDE_SKILLS_DST"
   log ""
   log "完成。重启 Codex / Claude Code 会话后，下列触发词可唤起:"
+  log "  方案发散: 「帮我想想」「brainstorm」「怎么设计」"
   log "  开工准备: 「开始前准备」「需求澄清」「先 grill 我」"
   log "  验证闭环: 「验证一下」「修好了吗」「上线了没」「确认生效」"
   log "  归因:     「这是代码问题吗」「先别急着改」「根因是什么」「归因」"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Task Brainstorm"
+  short_description: "Explore options before a task is defined"
+  default_prompt: "Help me brainstorm options and converge on a recommended path before implementation."
