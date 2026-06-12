@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四阶段 AI 开发工作流 · 工程化落地汇报</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --panel: #ffffff;
+    --panel-2: #f9fafb;
+    --ink: #182033;
+    --muted: #566070;
+    --faint: #7b8491;
+    --line: #dbe1ea;
+    --line-strong: #c8d0dc;
+    --blue: #2563a8;
+    --teal: #0d8274;
+    --green: #16845f;
+    --amber: #a96f12;
+    --red: #c43d34;
+    --code: #101722;
+    --code-line: #263247;
+    --radius: 8px;
+    --shadow: 0 16px 38px -32px rgba(24, 32, 51, .55);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, rgba(219, 225, 234, .55) 1px, transparent 1px),
+      linear-gradient(rgba(219, 225, 234, .55) 1px, transparent 1px),
+      var(--bg);
+    background-size: 44px 44px;
+    font-family: var(--sans);
+    line-height: 1.66;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  code, pre { font-family: var(--mono); }
+  code {
+    padding: 2px 5px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--panel-2);
+    color: #214d79;
+    font-size: .92em;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .wrap {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    padding: 20px 0;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .08em;
+  }
+
+  .topbar span { min-width: 0; overflow-wrap: anywhere; }
+  .topbar strong { color: var(--ink); }
+
+  .hero {
+    padding: 46px 0 34px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(330px, .82fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .eyebrow {
+    margin: 0 0 12px;
+    color: var(--blue);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 820px;
+    margin: 0;
+    font-size: clamp(34px, 4.8vw, 56px);
+    line-height: 1.14;
+    font-weight: 850;
+    letter-spacing: 0;
+  }
+
+  .lead {
+    max-width: 800px;
+    margin: 22px 0 0;
+    color: var(--muted);
+    font-size: 17px;
+    overflow-wrap: anywhere;
+  }
+
+  .scope-panel,
+  .card,
+  .table,
+  .flow-shot,
+  .trace,
+  .sequence {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .scope-panel {
+    padding: 20px;
+  }
+
+  .scope-panel h2 {
+    margin: 0 0 14px;
+    font-size: 19px;
+    line-height: 1.32;
+  }
+
+  .scope-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .scope-list li {
+    display: grid;
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .scope-list span { min-width: 0; overflow-wrap: anywhere; }
+
+  .scope-list li:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .scope-list b {
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .06em;
+  }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    background: rgba(244, 246, 248, .92);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-inner {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+
+  .nav a {
+    flex: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .nav a:hover {
+    color: var(--ink);
+    background: var(--panel);
+  }
+
+  section {
+    padding: 52px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    margin-bottom: 22px;
+  }
+
+  .no {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--ink);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.28;
+  }
+
+  .section-lead {
+    max-width: 840px;
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 15.5px;
+    overflow-wrap: anywhere;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .card {
+    position: relative;
+    padding: 19px;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--blue);
+  }
+
+  .card.warn::before { background: var(--red); }
+  .card.ok::before { background: var(--green); }
+  .card.teal::before { background: var(--teal); }
+  .card.amber::before { background: var(--amber); }
+
+  .label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+  }
+
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    line-height: 1.35;
+  }
+
+  .card p,
+  .card li {
+    color: var(--muted);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  .card p { margin: 0; }
+  .card ul { margin: 10px 0 0; padding-left: 18px; }
+
+  .flow-shot {
+    overflow: hidden;
+  }
+
+  .flow-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .sequence {
+    padding: 20px;
+  }
+
+  .seq-row {
+    display: grid;
+    grid-template-columns: 190px 34px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .seq-row:last-child { border-bottom: none; }
+  .seq-node {
+    padding: 10px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    background: var(--panel-2);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+
+  .seq-arrow {
+    color: var(--blue);
+    font-family: var(--mono);
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .seq-desc {
+    color: var(--muted);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  .table {
+    overflow: hidden;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 170px 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .row.asset { grid-template-columns: 220px 1fr 1fr; }
+  .row.trace-row { grid-template-columns: 160px 1fr 1fr 1fr; }
+  .row:last-child { border-bottom: none; }
+
+  .cell {
+    padding: 14px 16px;
+    border-right: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13.5px;
+    overflow-wrap: anywhere;
+  }
+
+  .cell:last-child { border-right: none; }
+
+  .head .cell {
+    background: var(--panel-2);
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .cell.key {
+    color: var(--ink);
+    font-weight: 800;
+  }
+
+  .stage0 { color: var(--amber); }
+  .stage1 { color: var(--blue); }
+  .stage2 { color: var(--teal); }
+  .stage3 { color: var(--green); }
+  .bad { color: var(--red); font-weight: 800; }
+  .good { color: var(--green); font-weight: 800; }
+
+  .code-block {
+    margin: 0;
+    padding: 18px 20px;
+    overflow-x: auto;
+    border: 1px solid var(--code-line);
+    border-radius: var(--radius);
+    background: var(--code);
+    color: #e9eef5;
+    font-size: 13px;
+    line-height: 1.72;
+    box-shadow: var(--shadow);
+    white-space: pre-wrap;
+  }
+
+  .code-block .comment { color: #95a0af; }
+  .code-block .mark { color: #f1c36d; }
+  .code-block .ok { color: #8bd7b0; }
+  .code-block .path { color: #8fc5ff; }
+
+  .trace {
+    overflow: hidden;
+  }
+
+  .trace-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel-2);
+  }
+
+  .trace-title h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .trace-title span {
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+  }
+
+  .checklist {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .check {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+
+  .check i {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .check b {
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .check span {
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+
+  .callout {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+    padding: 20px;
+    border: 1px solid rgba(22, 132, 95, .38);
+    border-radius: var(--radius);
+    background: #eefaf5;
+  }
+
+  .callout b {
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .12em;
+  }
+
+  .callout p {
+    margin: 0;
+    color: #245b48;
+    font-size: 14.5px;
+  }
+
+  footer {
+    padding: 34px 0 56px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 1000px) {
+    .hero-grid,
+    .grid.two,
+    .grid.four {
+      grid-template-columns: 1fr;
+    }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .row,
+    .row.asset,
+    .row.trace-row {
+      grid-template-columns: 160px 1fr;
+    }
+    .row .cell:nth-child(n+3) {
+      grid-column: 2;
+      border-top: 1px solid var(--line);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .wrap { width: min(100% - 28px, 1180px); }
+    .topbar { align-items: flex-start; flex-direction: column; }
+    .topbar span { width: 100%; }
+    .scope-list li { grid-template-columns: 1fr; gap: 4px; }
+    .grid,
+    .checklist,
+    .row,
+    .row.asset,
+    .row.trace-row,
+    .seq-row,
+    .callout {
+      grid-template-columns: 1fr;
+    }
+    .section-head { grid-template-columns: 1fr; }
+    .seq-arrow { display: none; }
+    .cell,
+    .row .cell:nth-child(n+3) {
+      grid-column: auto;
+      border-right: none;
+      border-top: 1px solid var(--line);
+    }
+    .row .cell:first-child { border-top: none; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .nav { display: none; }
+    .card,
+    .scope-panel,
+    .table,
+    .flow-shot,
+    .trace,
+    .sequence,
+    .code-block {
+      box-shadow: none;
+    }
+    section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+  <header class="wrap topbar">
+    <span><strong>四阶段 AI 开发工作流</strong> / 工程化落地汇报</span>
+    <span>外部依赖 + 取值地图 + 验证闭环 + 项目档案</span>
+  </header>
+
+  <main>
+    <section class="hero wrap" id="top">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">工程化落地方案</p>
+          <h1>四阶段 AI 开发工作流</h1>
+          <p class="lead">面向真实业务开发中常见的外部依赖、环境差异、配置行为和验证缺口，把 AI 协作拆成可执行的工作流：方案发散、任务准备、归因、外部真相、取值地图、实现、验证闭环、回灌档案。</p>
+        </div>
+        <aside class="scope-panel">
+          <h2>当前交付范围</h2>
+          <ul class="scope-list">
+            <li><b>入口</b><span>业务仓库内执行远程 <code>bootstrap.sh</code>，之后从该仓库启动 Codex。</span></li>
+            <li><b>资产</b><span><code>AGENTS.md</code>、<code>ai-workflow/</code>、四类 skills、HTML 说明页和取值地图模板。</span></li>
+            <li><b>约束</b><span>AI 不能跳过发散、澄清、归因和验证直接写码；非代码层问题必须先退出开发路径。</span></li>
+            <li><b>产物</b><span>归因结论、外部事实、取值链路、验证证据、回灌记录。</span></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <nav class="nav">
+      <div class="wrap nav-inner">
+        <a href="#problem">工程问题</a>
+        <a href="#architecture">注入链路</a>
+        <a href="#assets">运行资产</a>
+        <a href="#contract">阶段契约</a>
+        <a href="#debug">调试链路</a>
+        <a href="#verify">验证闭环</a>
+        <a href="#rollout">推广边界</a>
+      </div>
+    </nav>
+
+    <section class="wrap" id="problem">
+      <div class="section-head">
+        <span class="no">01</span>
+        <div>
+          <h2>要解决的不是“AI 不会写代码”</h2>
+          <p class="section-lead">在这类项目里，主要风险来自代码外事实不可见、跨层取值不一致、环境差异未确认，以及缺少可复核的完成证据。</p>
+        </div>
+      </div>
+      <div class="grid">
+        <article class="card warn">
+          <span class="label">失败模式</span>
+          <h3>错误归因</h3>
+          <p>配置、数据、权限、流程定义、目标环境差异被误判成代码 bug，导致 AI 在错误层面持续修改。</p>
+        </article>
+        <article class="card warn">
+          <span class="label">失败模式</span>
+          <h3>取值断链</h3>
+          <p>页面展示名、前端 value、接口参数、后端枚举、数据库字段不是同一个值，调用真实 API 也可能走错路径。</p>
+        </article>
+        <article class="card warn">
+          <span class="label">失败模式</span>
+          <h3>口头闭环</h3>
+          <p>只有“已修改”的说明，没有测试命令、接口返回、页面路径、日志证据和未覆盖风险，后续排查无法复用。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap" id="architecture">
+      <div class="section-head">
+        <span class="no">02</span>
+        <div>
+          <h2>从业务仓库接入到项目内约束的注入链路</h2>
+          <p class="section-lead">工作流不是靠开发人员记住规范，而是通过 bootstrap、项目说明文件和 skills 把约束注入到每个业务仓库。</p>
+        </div>
+      </div>
+      <div class="sequence">
+        <div class="seq-row">
+          <div class="seq-node">bootstrap.sh</div>
+          <div class="seq-arrow">→</div>
+          <div class="seq-desc">开发人员在业务仓库根目录执行一条命令，拉取或更新工作流缓存目录 <code>~/.four-stage-ai-workflow</code>。</div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-node">deploy.sh</div>
+          <div class="seq-arrow">→</div>
+          <div class="seq-desc">探测技术栈，安装 workflow skills，生成 <code>ai-workflow/</code>，并注入自然语言路由。</div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-node">~/.agents/skills</div>
+          <div class="seq-arrow">→</div>
+          <div class="seq-desc">Codex 可隐式触发 <code>ai-task-brainstorm</code>、<code>ai-task-preflight</code>、<code>attribute-rootcause</code>、<code>verify-closure</code>。</div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-node">AGENTS.md</div>
+          <div class="seq-arrow">→</div>
+          <div class="seq-desc">把“帮我想想 / 开始前准备 / 先归因 / 验证闭环”等自然语言映射成工作流动作。</div>
+        </div>
+        <div class="seq-row">
+          <div class="seq-node">业务仓库</div>
+          <div class="seq-arrow">→</div>
+          <div class="seq-desc">之后所有 AI 辅助开发都在业务仓库发生，Codex 每次会话读取项目事实和阶段纪律。</div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+      <pre class="code-block"><span class="comment"># 每个业务仓库内执行</span>
+cd /path/to/business-repo
+curl -fsSL https://raw.githubusercontent.com/Coder42Y/four-gate-ai-workflow/master/bootstrap.sh -o /tmp/four-stage-bootstrap.sh
+bash /tmp/four-stage-bootstrap.sh
+
+<span class="comment"># 之后从业务仓库启动 Codex</span>
+codex</pre>
+    </section>
+
+    <section class="wrap" id="assets">
+      <div class="section-head">
+        <span class="no">03</span>
+        <div>
+          <h2>运行时资产结构</h2>
+          <p class="section-lead">每个文件都有明确用途：有的约束 AI 行为，有的记录项目事实，有的负责把阶段产物沉淀下来。</p>
+        </div>
+      </div>
+      <div class="table">
+        <div class="row asset head">
+          <div class="cell">资产</div>
+          <div class="cell">运行时作用</div>
+          <div class="cell">对应阶段</div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>AGENTS.md</code> 注入片段</div>
+          <div class="cell">作为业务仓库的常驻约束，把用户自然语言路由到发散、澄清、归因、取值地图、验证和回灌。</div>
+          <div class="cell">全阶段</div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>环境真相档案.md</code></div>
+          <div class="cell">记录启动方式、配置中心、数据库、权限、目标环境、运维入口和不能靠代码推断的事实。</div>
+          <div class="cell"><span class="stage1">阶段 1</span></div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>ai-task-brainstorm</code></div>
+          <div class="cell">把粗想法拆成 2-4 个可比较方案，给出推荐路径、取舍理由和下一步输入。</div>
+          <div class="cell">前置</div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>ai-task-preflight</code></div>
+          <div class="cell">把一句模糊任务收敛成目标、边界、上下文、外部依赖、验收证据和风险简报。</div>
+          <div class="cell">开工准备</div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>取值地图增补.md</code></div>
+          <div class="cell">记录 UI、前端状态、接口参数、后端枚举、SQL、数据库字段之间的唯一取值路径。</div>
+          <div class="cell"><span class="stage2">阶段 2</span></div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>attribute-rootcause</code></div>
+          <div class="cell">要求 AI 在 debug 任务里先判断问题层级，避免直接进入代码修改。</div>
+          <div class="cell"><span class="stage0">阶段 0</span></div>
+        </div>
+        <div class="row asset">
+          <div class="cell key"><code>verify-closure</code></div>
+          <div class="cell">要求 AI 产出验证命令、证据、未覆盖范围和残余风险。</div>
+          <div class="cell"><span class="stage3">阶段 3</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap" id="contract">
+      <div class="section-head">
+        <span class="no">04</span>
+        <div>
+          <h2>阶段契约：每一步都有输入、动作和产物</h2>
+          <p class="section-lead">四阶段的重点不是流程图本身，而是每个阶段都规定了 AI 可以做什么、必须交付什么、什么时候不能继续。</p>
+        </div>
+      </div>
+      <div class="flow-shot">
+        <img src="assets/four-stage-flow.png" alt="四阶段 AI 开发工作流流程图">
+      </div>
+      <div style="height:16px"></div>
+      <div class="table">
+        <div class="row head">
+          <div class="cell">阶段</div>
+          <div class="cell">输入</div>
+          <div class="cell">AI 动作</div>
+          <div class="cell">产物 / 停止条件</div>
+        </div>
+        <div class="row">
+          <div class="cell key">前置：方案发散</div>
+          <div class="cell">粗想法、改造方向、想做成可复用能力的诉求。</div>
+          <div class="cell">比较 2-4 个方案，按复用性、接入成本、维护成本、验证难度做取舍。</div>
+          <div class="cell">输出推荐路径；没有推荐和取舍理由，不进入实现。</div>
+        </div>
+        <div class="row">
+          <div class="cell key">开工准备：任务简报</div>
+          <div class="cell">一句话需求、缺陷描述、截图、日志或不完整验收口径。</div>
+          <div class="cell">能查的信息先查，查不到才一次问一个关键问题，并给推荐答案。</div>
+          <div class="cell">输出目标、边界、上下文、外部依赖、验收证据和风险。</div>
+        </div>
+        <div class="row">
+          <div class="cell key"><span class="stage0">阶段 0：归因</span></div>
+          <div class="cell">现象、报错、复现路径、最近变更。</div>
+          <div class="cell">按页面、接口、服务、SQL、数据、配置、权限、环境逐层排查。</div>
+          <div class="cell">输出归因结论；若是配置/数据/环境问题，停止写码。</div>
+        </div>
+        <div class="row">
+          <div class="cell key"><span class="stage1">阶段 1：外部真相</span></div>
+          <div class="cell">归因怀疑点和项目事实档案。</div>
+          <div class="cell">核对配置中心、数据库、流程定义、权限系统、CI/CD、目标环境。</div>
+          <div class="cell">输出外部事实清单；事实缺失时不能靠猜继续。</div>
+        </div>
+        <div class="row">
+          <div class="cell key"><span class="stage2">阶段 2：取值地图</span></div>
+          <div class="cell">业务字段、枚举、接口参数、查询条件。</div>
+          <div class="cell">追踪 UI 展示名、前端 value、API payload、DTO、枚举、SQL、DB 字段。</div>
+          <div class="cell">输出唯一正路；存在多套取值时先统一映射。</div>
+        </div>
+        <div class="row">
+          <div class="cell key"><span class="stage3">阶段 3：验证闭环</span></div>
+          <div class="cell">代码 diff、配置变更、验证目标。</div>
+          <div class="cell">执行测试、构建、接口请求、页面路径、日志核对。</div>
+          <div class="cell">输出证据和残余风险；无证据不能宣称完成。</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap" id="debug">
+      <div class="section-head">
+        <span class="no">05</span>
+        <div>
+          <h2>调试链路：订单状态筛选不生效</h2>
+          <p class="section-lead">下面不是示意口号，而是这套工作流要求 AI 在真实 bug 里输出的链路级排查结果。</p>
+        </div>
+      </div>
+      <div class="trace">
+        <div class="trace-title">
+          <h3>现象：选择“已完成”后列表仍返回全部订单</h3>
+          <span>ROOTCAUSE TRACE</span>
+        </div>
+        <div class="table" style="border:0; box-shadow:none; border-radius:0">
+          <div class="row trace-row head">
+            <div class="cell">链路层级</div>
+            <div class="cell">实际观察</div>
+            <div class="cell">判断</div>
+            <div class="cell">下一步</div>
+          </div>
+          <div class="row trace-row">
+            <div class="cell key">页面组件</div>
+            <div class="cell">下拉框 label 为“已完成”，value 为 <code>completed</code>。</div>
+            <div class="cell">页面交互正常，参数确实被选择。</div>
+            <div class="cell">继续查请求参数。</div>
+          </div>
+          <div class="row trace-row">
+            <div class="cell key">接口请求</div>
+            <div class="cell"><code>GET /api/orders?status=completed</code></div>
+            <div class="cell">前端传参存在，不是按钮事件失效。</div>
+            <div class="cell">继续查后端 DTO 和枚举。</div>
+          </div>
+          <div class="row trace-row">
+            <div class="cell key">后端枚举</div>
+            <div class="cell">DTO 期望 <code>OrderStatus.FINISHED</code>。</div>
+            <div class="cell"><span class="bad">跨层取值不一致</span>，转换失败后 status 为空。</div>
+            <div class="cell">建立映射或统一 API contract。</div>
+          </div>
+          <div class="row trace-row">
+            <div class="cell key">SQL 条件</div>
+            <div class="cell"><code>&lt;if test="status != null"&gt;</code> 才拼接筛选条件。</div>
+            <div class="cell">转换失败导致查询条件被跳过。</div>
+            <div class="cell">补测试覆盖空值和有效值。</div>
+          </div>
+          <div class="row trace-row">
+            <div class="cell key">数据库字段</div>
+            <div class="cell">实际存储值为 <code>DONE</code>。</div>
+            <div class="cell"><span class="bad">页面值、后端枚举、DB 值三套命名</span>。</div>
+            <div class="cell">写入取值地图，避免再次猜测。</div>
+          </div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+      <div class="grid two">
+        <pre class="code-block"><span class="comment"># 触发归因</span>
+<span class="mark">先归因，不要急着写代码。</span>
+现象：订单列表选择“已完成”后仍显示全部订单。
+
+请沿页面选择值、接口参数、DTO、枚举、
+SQL 条件、数据库字段逐层排查，并标明
+哪一层有证据，哪一层只是推测。</pre>
+        <pre class="code-block"><span class="comment"># 触发取值地图</span>
+请画出 status 的取值地图：
+UI 展示名 / 前端 value / API 参数 / 后端枚举 /
+SQL 条件 / DB 字段值。
+
+如果存在多套命名，先给出映射方案，
+再判断是否需要改代码。</pre>
+      </div>
+    </section>
+
+    <section class="wrap" id="verify">
+      <div class="section-head">
+        <span class="no">06</span>
+        <div>
+          <h2>验证闭环：把“完成”改成证据集合</h2>
+          <p class="section-lead">阶段 3 要求把结果写成可复核的证据，而不是停在“我改完了”。证据越具体，后续交接和回滚成本越低。</p>
+        </div>
+      </div>
+      <div class="checklist">
+        <div class="check"><i>1</i><div><b>命令证据</b><span>单测、lint、构建、相关模块测试的命令和结果。</span></div></div>
+        <div class="check"><i>2</i><div><b>接口证据</b><span>请求 URL、参数、响应摘要、关键字段断言。</span></div></div>
+        <div class="check"><i>3</i><div><b>页面证据</b><span>用户路径、筛选条件、页面结果和异常分支。</span></div></div>
+        <div class="check"><i>4</i><div><b>日志证据</b><span>服务日志、SQL 日志、错误栈、CI/CD 或目标环境输出。</span></div></div>
+        <div class="check"><i>5</i><div><b>未覆盖范围</b><span>说明哪些环境、角色、数据量或流程分支尚未验证。</span></div></div>
+        <div class="check"><i>6</i><div><b>回灌记录</b><span>把新增事实写回环境档案或取值地图。</span></div></div>
+      </div>
+      <div style="height:16px"></div>
+      <pre class="code-block"><span class="comment"># 验证闭环提示词</span>
+<span class="ok">验证闭环：</span>这次改动是否真的生效？
+请按“命令证据 / 接口证据 / 页面路径 / 日志证据 / 未覆盖风险 / 回灌内容”输出。
+没有执行过的验证不要写成已通过。</pre>
+    </section>
+
+    <section class="wrap" id="rollout">
+      <div class="section-head">
+        <span class="no">07</span>
+        <div>
+          <h2>推广边界和验收口径</h2>
+          <p class="section-lead">这套工作流适合先在一个真实业务项目里试点。不同技术栈可以复用阶段思想，但环境档案、取值地图和验证命令必须按项目重填。</p>
+        </div>
+      </div>
+      <div class="grid three">
+        <article class="card ok">
+          <span class="label">适用</span>
+          <h3>外部依赖重的业务系统</h3>
+          <p>配置中心、权限系统、流程引擎、数据字典、CI/CD、目标环境差异等特征越明显，收益越直接。</p>
+        </article>
+        <article class="card amber">
+          <span class="label">试点</span>
+          <h3>先跑真实任务</h3>
+          <p>拿真实需求和 bug 试点，观察是否减少错误归因、取值误判和无证据交付，而不是只看安装是否成功。</p>
+        </article>
+        <article class="card teal">
+          <span class="label">验收</span>
+          <h3>看阶段产物是否留下来</h3>
+          <p>每次任务结束后应能看到归因、外部事实、取值地图、验证证据和回灌记录，而不是只有代码 diff。</p>
+        </article>
+      </div>
+      <div style="height:16px"></div>
+      <div class="callout">
+        <b>汇报结论</b>
+        <p>四阶段的工程价值在于把 AI 辅助开发约束成可复核流程：先确认任务和事实，再决定是否写代码；写完以后用证据关闭，并把新增事实沉淀回项目。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    四阶段 AI 开发工作流 · 工程化落地汇报 · 本地静态 HTML
+  </footer>
+</body>
+</html>

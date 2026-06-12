@@ -25,6 +25,7 @@
 | `deploy.sh` | **一键部署**：全局 Skills + 项目级模板 + `AGENTS.md` / `CLAUDE.md` 注入 | `bash deploy.sh /path/to/project` |
 | `四阶段工作流.html` | 静态说明页，用于讲解方法论 | 浏览器直接打开 |
 | `四阶段使用说明.html` | 静态使用说明页：安装、调用、排错 | 给同事照着操作 |
+| `四阶段汇报.html` | 静态汇报页：工程问题、注入链路、阶段契约、调试闭环 | 给评审/汇报场景 |
 
 ## 推荐入口：Codex
 
@@ -87,7 +88,7 @@ bash deploy.sh --uninstall /path/to/your/project
 
 部署后需手动完成：编辑 `ai-workflow/环境真相档案.md` 中的 `[待填]` 项。
 
-`四阶段工作流.html` 是方法论介绍页，适合打开给团队讲这套方法；`四阶段使用说明.html` 是操作说明页，供同事第一次照着安装和调用。真正的落地入口是 Codex 下的 `bootstrap.sh` / `deploy.sh`；Claude Code 用户可继续用 `/four-stage-install`。项目内落地资产是生成到业务 repo 的 `ai-workflow/` 文档和项目说明文件。
+`四阶段工作流.html` 是方法论介绍页，适合打开给团队讲这套方法；`四阶段使用说明.html` 是操作说明页，供同事第一次照着安装和调用；`四阶段汇报.html` 是面向汇报/评审的工程化说明页。真正的落地入口是 Codex 下的 `bootstrap.sh` / `deploy.sh`；Claude Code 用户可继续用 `/four-stage-install`。项目内落地资产是生成到业务 repo 的 `ai-workflow/` 文档和项目说明文件。
 
 > 旧版 `安装.sh` 仍可用（仅做全局 skill 软链），建议迁移到 `deploy.sh`。
 

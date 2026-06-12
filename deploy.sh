@@ -392,6 +392,11 @@ create_workflow_dir() {
     cp "$HERE/四阶段使用说明.html" "$awd/四阶段使用说明.html"
     log "复制: 四阶段使用说明.html"
   fi
+
+  if [ -f "$HERE/四阶段汇报.html" ]; then
+    cp "$HERE/四阶段汇报.html" "$awd/四阶段汇报.html"
+    log "复制: 四阶段汇报.html"
+  fi
 }
 
 # 生成项目级环境真相档案
@@ -737,7 +742,9 @@ print_summary() {
   printf '     → ai-workflow/四阶段工作流.html\n\n'
   printf '  5. 打开四阶段使用说明页（可选）\n'
   printf '     → ai-workflow/四阶段使用说明.html\n\n'
-  printf '  6. 重启 Codex / Claude Code 会话，触发词生效:\n'
+  printf '  6. 打开四阶段汇报页（可选）\n'
+  printf '     → ai-workflow/四阶段汇报.html\n\n'
+  printf '  7. 重启 Codex / Claude Code 会话，触发词生效:\n'
   printf '     方案发散: 「帮我想想」「brainstorm」「怎么设计」\n'
   printf '     开工准备: 「开始前准备」「需求澄清」「先 grill 我」\n'
   printf '     验证闭环: 「验证一下」「修好了吗」「确认生效」\n'
@@ -812,7 +819,9 @@ do_project_check() {
   [ -f "$awd/环境真相档案.md" ] && log "环境真相档案.md 存在" || printf '  ✗ 环境真相档案.md 缺失\n'
   [ -f "$awd/取值地图指南.md" ] && log "取值地图指南.md 存在" || printf '  ✗ 取值地图指南.md 缺失\n'
   [ -f "$awd/四阶段蓝图.md" ] && log "四阶段蓝图.md 存在" || printf '  ✗ 四阶段蓝图.md 缺失\n'
+  [ -f "$awd/四阶段工作流.html" ] && log "四阶段工作流.html 存在" || printf '  ✗ 四阶段工作流.html 缺失\n'
   [ -f "$awd/四阶段使用说明.html" ] && log "四阶段使用说明.html 存在" || printf '  ✗ 四阶段使用说明.html 缺失\n'
+  [ -f "$awd/四阶段汇报.html" ] && log "四阶段汇报.html 存在" || printf '  ✗ 四阶段汇报.html 缺失\n'
 
   # 待填项统计
   if [ -f "$awd/环境真相档案.md" ]; then
